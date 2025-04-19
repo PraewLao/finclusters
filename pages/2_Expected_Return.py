@@ -3,71 +3,68 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 
-# Load model coefficients
+# Load coefficients
 @st.cache_data
 def load_coefficients():
-    url = "https://raw.githubusercontent.com/PraewLao/price-and-peers-app/refs/heads/main/sector_model_coefficients_by_ticker.csv"
+    url = "https://raw.githubusercontent.com/PraewLao/price-and-peers-app/main/sector_model_coefficients_by_ticker.csv"
     return pd.read_csv(url)
 
 coeff_df = load_coefficients()
 
-st.title("📈 Expected Return Predictor (by Ticker)")
+# === SIDEBAR ===
+st.sidebar.title("🔍 Stock Selection")
+ticker = st.sidebar.text_input("Enter stock ticker (e.g., AAPL)", value="AAPL")
 
-# --- Ticker input ---
-ticker = st.text_input("Enter stock ticker (e.g., AAPL)", value="AAPL")
-
+# === MAIN PAGE ===
 if ticker:
     try:
         stock_info = yf.Ticker(ticker).info
         sector = stock_info.get("sector", "Unknown")
+
+        st.title(f"📈 Expected Return on {ticker.upper()}")
         st.markdown(f"**Sector:** `{sector}`")
 
-        # --- Match ticker to model and coefficients ---
         row = coeff_df[coeff_df["ticker"].str.upper() == ticker.upper()]
-
         if row.empty:
-            st.error("❌ Ticker not found in trained model data.")
+            st.error("❌ Ticker not found in model data.")
             st.stop()
 
         model_type = row["model"].values[0]
         intercept = row["intercept"].values[0]
-        sector_model = row["sector"].values[0]
+        st.markdown(f"**Model used**: `{model_type}`")
 
-        # Get relevant coefficients
+        # Get coefficients
         coefs = []
         for i in range(1, 5):
             col = f"coef_{i}"
             if col in row.columns and not pd.isna(row[col].values[0]):
                 coefs.append(row[col].values[0])
 
-        st.markdown(f"**Model used**: `{model_type}`")
-
-        # --- Factor input ---
+        # Factor input labels
         factor_labels = {
-            "CAPM": "Enter MKT-RF (e.g. 0.01)",
+            "CAPM": "Enter MKT-RF",
             "FF3": "Enter MKT-RF, SMB, HML",
             "Carhart": "Enter MKT-RF, SMB, HML, MOM"
         }
-
-        default_inputs = {
+        defaults = {
             "CAPM": "0.01",
             "FF3": "0.01, 0.02, -0.01",
             "Carhart": "0.01, 0.02, -0.01, 0.015"
         }
 
-        factor_input = st.text_input(factor_labels[model_type], value=default_inputs[model_type])
-        rf = st.number_input("Enter Risk-Free Rate (e.g. 0.004)", value=0.004, step=0.001)
+        factor_input = st.text_input(factor_labels[model_type], value=defaults[model_type])
 
+        # Percentage input for RF
+        rf_percent = st.number_input("Enter Risk-Free Rate (%)", min_value=0.0, max_value=100.0, value=0.4)
+        rf = rf_percent / 100
+
+        # Prediction
         try:
             x = np.array([float(i.strip()) for i in factor_input.split(",")])
-            predicted_excess = intercept + np.dot(coefs, x)
-            predicted_total = predicted_excess + rf
-
-            annual_return = (1 + predicted_total) ** 12 - 1
-            st.success(f"📊 Predicted Monthly Return: **{round(predicted_total * 100, 2)}%**")
-
+            monthly_return = intercept + np.dot(coefs, x) + rf
+            st.success(f"📊 Expected Monthly Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
         except:
             st.error("⚠️ Please check that your factor inputs match the model type.")
 
     except Exception as e:
-        st.error(f"Error fetching data: {e}")
+        st.error(f"Error: {e}")
