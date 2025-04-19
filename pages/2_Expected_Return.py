@@ -63,7 +63,9 @@ if ticker:
             predicted_excess = intercept + np.dot(coefs, x)
             predicted_total = predicted_excess + rf
 
-            st.success(f"📊 Predicted Monthly Return: **{round(predicted_total * 100, 2)}%**")
+            annual_return = (1 + predicted_total) ** 12 - 1
+st.success(f"📈 Predicted **Annual Return**: **{round(annual_return * 100, 2)}%**")
+
         except:
             st.error("⚠️ Please check that your factor inputs match the model type.")
 
