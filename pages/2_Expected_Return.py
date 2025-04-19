@@ -14,9 +14,9 @@ def load_coefficients():
 def get_default_rf():
     try:
         rf_yield = yf.Ticker("^TNX").info["regularMarketPrice"] / 100
-        return round(rf_yield * 100, 2)  # return as percent
+        return round(rf_yield * 100, 2)  # as percent
     except:
-        return 4.0  # fallback
+        return 4.0  # fallback value if API fails
 
 coeff_df = load_coefficients()
 default_rf = get_default_rf()
@@ -24,7 +24,7 @@ default_rf = get_default_rf()
 # === SIDEBAR ===
 st.sidebar.title("🔍 Stock Selection")
 ticker = st.sidebar.text_input("Enter stock ticker", value=st.session_state.get("ticker", "AAPL"))
-st.session_state["ticker"] = ticker
+st.session_state["ticker"] = ticker  # store across pages
 
 # === MAIN PAGE ===
 if ticker:
@@ -52,7 +52,7 @@ if ticker:
             if col in row.columns and not pd.isna(row[col].values[0]):
                 coefs.append(row[col].values[0])
 
-        # Use static inputs for model factors
+        # Use default hardcoded factor inputs internally
         factor_inputs = {
             "CAPM": [0.01],
             "FF3": [0.01, 0.02, -0.01],
@@ -64,20 +64,19 @@ if ticker:
         rf_percent = st.number_input("Enter Risk-Free Rate (%)", min_value=0.0, max_value=100.0, value=default_rf)
         rf = rf_percent / 100
 
-        # Prediction
+        # Predict return
         monthly_return = intercept + np.dot(coefs, x) + rf
         st.success(f"📊 Expected Monthly Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
 
-    # === PEER RETURN RANGE (placeholder) ===
-st.markdown("---")
-st.subheader("🧠 Expected Return Range of Peers")
-st.info("Peer returns based on cluster analysis will be displayed here.")
+        # === PEER RETURN RANGE (placeholder) ===
+        st.markdown("---")
+        st.subheader("🧠 Expected Return Range of Peers")
+        st.info("Peer returns based on cluster analysis will be displayed here.")
 
-# === ANALYST RETURN ESTIMATE (placeholder) ===
-st.markdown("---")
-st.subheader("📣 Expected Return by Analyst Forecasts")
-st.info("Analyst-derived return estimates will appear here.")
-
+        # === ANALYST RETURN ESTIMATE (placeholder) ===
+        st.markdown("---")
+        st.subheader("📣 Expected Return by Analyst Forecasts")
+        st.info("Analyst-derived return estimates will appear here.")
 
     except Exception as e:
         st.error(f"Error: {e}")
