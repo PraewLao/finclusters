@@ -68,5 +68,16 @@ if ticker:
         monthly_return = intercept + np.dot(coefs, x) + rf
         st.success(f"📊 Expected Monthly Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
 
+    # === PEER RETURN RANGE (placeholder) ===
+st.markdown("---")
+st.subheader("🧠 Expected Return Range of Peers")
+st.info("Peer returns based on cluster analysis will be displayed here.")
+
+# === ANALYST RETURN ESTIMATE (placeholder) ===
+st.markdown("---")
+st.subheader("📣 Expected Return by Analyst Forecasts")
+st.info("Analyst-derived return estimates will appear here.")
+
+
     except Exception as e:
         st.error(f"Error: {e}")
