@@ -64,7 +64,7 @@ if ticker:
             predicted_total = predicted_excess + rf
 
             annual_return = (1 + predicted_total) ** 12 - 1
-st.success(f"📈 Predicted **Annual Return**: **{round(annual_return * 100, 2)}%**")
+            st.success(f"📈 Predicted **Annual Return**: **{round(annual_return * 100, 2)}%**")
 
         except:
             st.error("⚠️ Please check that your factor inputs match the model type.")
