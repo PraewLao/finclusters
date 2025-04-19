@@ -3,26 +3,37 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 
-# Load updated model coefficients
+# Load model coefficients
 @st.cache_data
 def load_coefficients():
     url = "https://raw.githubusercontent.com/PraewLao/price-and-peers-app/main/sector_model_coefficients_by_ticker_UPDATED.csv"
     return pd.read_csv(url)
 
+# Get default 10-year treasury yield
+@st.cache_data
+def get_default_rf():
+    try:
+        rf_yield = yf.Ticker("^TNX").info["regularMarketPrice"] / 100
+        return round(rf_yield * 100, 2)  # return as percent
+    except:
+        return 4.0  # fallback
+
 coeff_df = load_coefficients()
+default_rf = get_default_rf()
 
 # === SIDEBAR ===
 st.sidebar.title("🔍 Stock Selection")
 ticker = st.sidebar.text_input("Enter stock ticker", value=st.session_state.get("ticker", "AAPL"))
-st.session_state["ticker"] = ticker  # share across pages
+st.session_state["ticker"] = ticker
 
 # === MAIN PAGE ===
 if ticker:
     try:
         stock_info = yf.Ticker(ticker).info
+        company_name = stock_info.get("longName", ticker.upper())
         sector = stock_info.get("sector", "Unknown")
 
-        st.title(f"📈 Expected Return on {ticker.upper()}")
+        st.title(f"📈 Expected Return on {company_name} ({ticker.upper()})")
         st.markdown(f"**Sector:** `{sector}`")
 
         row = coeff_df[coeff_df["ticker"].str.upper() == ticker.upper()]
@@ -41,31 +52,21 @@ if ticker:
             if col in row.columns and not pd.isna(row[col].values[0]):
                 coefs.append(row[col].values[0])
 
-        # Factor labels and default inputs
-        factor_labels = {
-            "CAPM": "Enter MKT-RF",
-            "FF3": "Enter MKT-RF, SMB, HML",
-            "Carhart": "Enter MKT-RF, SMB, HML, MOM"
+        # Use static inputs for model factors
+        factor_inputs = {
+            "CAPM": [0.01],
+            "FF3": [0.01, 0.02, -0.01],
+            "Carhart": [0.01, 0.02, -0.01, 0.015]
         }
-        defaults = {
-            "CAPM": "0.01",
-            "FF3": "0.01, 0.02, -0.01",
-            "Carhart": "0.01, 0.02, -0.01, 0.015"
-        }
+        x = np.array(factor_inputs[model_type])
 
-        factor_input = st.text_input(factor_labels[model_type], value=defaults[model_type])
-
-        # Risk-Free Rate input (as percentage)
-        rf_percent = st.number_input("Enter Risk-Free Rate (%)", min_value=0.0, max_value=100.0, value=0.4)
+        # Risk-Free Rate input
+        rf_percent = st.number_input("Enter Risk-Free Rate (%)", min_value=0.0, max_value=100.0, value=default_rf)
         rf = rf_percent / 100
 
-        # Prediction logic
-        try:
-            x = np.array([float(i.strip()) for i in factor_input.split(",")])
-            monthly_return = intercept + np.dot(coefs, x) + rf
-            st.success(f"📊 Expected Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
-        except:
-            st.error("⚠️ Please check that your factor inputs match the model type.")
+        # Prediction
+        monthly_return = intercept + np.dot(coefs, x) + rf
+        st.success(f"📊 Expected Monthly Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
 
     except Exception as e:
         st.error(f"Error: {e}")
