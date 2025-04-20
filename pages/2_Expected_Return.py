@@ -6,7 +6,7 @@ import numpy as np
 # Load model coefficients
 @st.cache_data
 def load_coefficients():
-    url = "https://raw.githubusercontent.com/PraewLao/price-and-peers-app/refs/heads/main/sector_model_coefficients_by_ticker_REPLACEMENT.csv"
+    url = "https://raw.githubusercontent.com/PraewLao/price-and-peers-app/main/sector_model_coefficients_by_ticker_REPLACEMENT.csv"
     return pd.read_csv(url)
 
 # Get default 10-year treasury yield
