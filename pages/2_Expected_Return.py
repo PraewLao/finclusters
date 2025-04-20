@@ -73,10 +73,22 @@ if ticker:
         st.subheader("🧠 Expected Return Range of Peers")
         st.info("Peer returns based on cluster analysis will be displayed here.")
 
-        # === ANALYST RETURN ESTIMATE (placeholder) ===
+        # === ANALYST RETURN ESTIMATE ===
         st.markdown("---")
         st.subheader("📣 Expected Return by Analyst Forecasts")
-        st.info("Analyst-derived return estimates will appear here.")
+        
+        try:
+            forward_pe = stock_info.get("forwardPE", None)
+            if forward_pe and forward_pe > 0:
+                analyst_growth = 0.03  # fixed terminal growth
+                analyst_return = (1 / forward_pe) + analyst_growth
+                st.success(f"📣 Analyst-Based Expected Return: **{round(analyst_return * 100, 2)}%**")
+                st.caption("Formula: 1 / Forward P/E + 3% (terminal growth assumption)")
+            else:
+                st.info("Forward P/E not available. Analyst return estimate could not be calculated.")
+        except:
+            st.error("⚠️ Unable to calculate analyst return due to missing or invalid data.")
+
 
     except Exception as e:
         st.error(f"Error: {e}")
