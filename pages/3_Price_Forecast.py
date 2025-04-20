@@ -40,9 +40,9 @@ if ticker:
         st.markdown("---")
         st.subheader("📌 Forecasted Prices")
         if model_price:
-            st.markdown(f"🐮 Model-Based Price Estimate: **${model_price:.2f}**")
+            st.markdown(f"🧠 Model-Based Price Estimate: **${model_price:.2f}**")
         if peer_price:
-            st.markdown(f"🧠 Peer Price Estimate (Placeholder): **${peer_price:.2f}**")
+            st.markdown(f"📊 Peer Price Estimate (Placeholder): **${peer_price:.2f}**")
         if analyst_price:
             st.markdown(f"📣 Analyst Price Estimate: **${analyst_price:.2f}**")
 
