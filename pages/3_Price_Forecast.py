@@ -19,41 +19,41 @@ if ticker:
 
         st.title(f"💰 Price Forecast for {company_name}")
 
-        # === YTD Chart ===
-        hist = stock.history(period="ytd")
+        # === Collect model-based return ===
+        model_return = st.session_state.get("expected_return", None)
+        terminal_growth = 0.03
+        model_price = None
+        if forward_eps and model_return and model_return > terminal_growth:
+            model_price = forward_eps / (model_return - terminal_growth)
+
+        # Analyst forecast
+        analyst_price = None
+        if forward_pe and forward_eps:
+            analyst_price = forward_pe * forward_eps
+
+        # Peer forecast (placeholder)
+        peer_price = None
+        if model_price and analyst_price:
+            peer_price = (model_price + analyst_price) / 2
+
+        # === Forecasted Price Summary ===
+        st.markdown("---")
+        st.subheader("📌 Forecasted Prices")
+        if model_price:
+            st.markdown(f"🐮 Model-Based Price Estimate: **${model_price:.2f}**")
+        if peer_price:
+            st.markdown(f"🧠 Peer Price Estimate (Placeholder): **${peer_price:.2f}**")
+        if analyst_price:
+            st.markdown(f"📣 Analyst Price Estimate: **${analyst_price:.2f}**")
+
+        # === 1-Year Chart ===
+        hist = stock.history(period="1y")
         if not hist.empty:
-            st.subheader("📈 Year-to-Date Share Price")
-            st.line_chart(hist["Close"], use_container_width=True)
-
-            # Collect model-based return
-            model_return = st.session_state.get("expected_return", None)
-            terminal_growth = 0.03
-            model_price = None
-            if forward_eps and model_return and model_return > terminal_growth:
-                model_price = forward_eps / (model_return - terminal_growth)
-
-            # Analyst forecast
-            analyst_price = None
-            if forward_pe and forward_eps:
-                analyst_price = forward_pe * forward_eps
-
-            # Peer forecast (placeholder)
-            peer_price = None
-            if model_price and analyst_price:
-                peer_price = (model_price + analyst_price) / 2
-
-            # Display forecast notes
             st.markdown("---")
-            st.subheader("📌 Forecasted Prices")
-            if model_price:
-                st.markdown(f"💸 Model-Based Price Estimate: **${model_price:.2f}**")
-            if peer_price:
-                st.markdown(f"🧠 Peer Price Estimate (Placeholder): **${peer_price:.2f}**")
-            if analyst_price:
-                st.markdown(f"📣 Analyst Price Estimate: **${analyst_price:.2f}**")
-
+            st.subheader("📉 One-Year Share Price")
+            st.line_chart(hist["Close"], use_container_width=True)
         else:
-            st.info("YTD price data not available.")
+            st.info("1Y price data not available.")
 
     except Exception as e:
         st.error(f"⚠️ Error fetching data: {e}")
