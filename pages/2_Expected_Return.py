@@ -66,10 +66,10 @@ if ticker:
         # ✅ Save to session state for Page 3
         st.session_state["expected_return"] = monthly_return
 
-        st.success(f"📊 Expected Monthly Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
+        st.success(f"🧠 Expected Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
 
         st.markdown("---")
-        st.subheader("🧠 Expected Return Range of Peers")
+        st.subheader("📊 Expected Return Range of Peers")
         st.info("Peer returns based on cluster analysis will be displayed here.")
 
         st.markdown("---")
