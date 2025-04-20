@@ -1,4 +1,3 @@
-# === 📁 pages/page3.py ===
 import streamlit as st
 import yfinance as yf
 import numpy as np
@@ -19,16 +18,15 @@ if ticker:
         st.title(f"💰 Price Forecast for {company_name}")
         st.markdown(f"**Forward EPS:** `{forward_eps}`")
 
-        # === Model-based Price Forecast ===
-        model_expected_return = st.number_input("", min_value=0.0, max_value=100.0, value=8.0, step=0.01, label_visibility="collapsed")
-        model_return = model_expected_return / 100  # full precision
+        # ✅ Use expected return from Page 2
+        model_return = st.session_state.get("expected_return", None)
         terminal_growth = 0.03
 
-        if forward_eps and model_return > terminal_growth:
+        if forward_eps and model_return and model_return > terminal_growth:
             model_price = forward_eps / (model_return - terminal_growth)
             st.success(f"💸 Estimated Share Price (Model-Based): **${model_price:.2f}**")
         else:
-            st.info("Cannot calculate model price: Missing forward EPS or invalid expected return.")
+            st.info("Cannot calculate model price: Missing forward EPS or expected return.")
 
         # === Peer Price Placeholder ===
         st.markdown("---")
