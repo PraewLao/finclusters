@@ -7,13 +7,15 @@ import os
 st.title("📊 Financial Ratio Cluster Finder")
 
 # === 1. Load model & data safely ===
+
+# If TIC's GICS is 35 (need revision)
 @st.cache_resource
 def load_models_and_data():
     try:
-        scaler = joblib.load('scaler.pkl')
-        kmeans = joblib.load('kmeans_model.pkl')
-        pca = joblib.load('pca_transformer.pkl')
-        df = pd.read_csv('clustered_data.csv')
+        scaler = joblib.load('scaler_hc.pkl')
+        kmeans = joblib.load('kmeans_model_hc.pkl')
+        pca = joblib.load('pca_transformer_hc.pkl')
+        df = pd.read_csv('clustered_data_hc.csv')
         return scaler, kmeans, pca, df
     except FileNotFoundError as e:
         st.error(f"❌ File not found: {e.filename}")
@@ -21,9 +23,11 @@ def load_models_and_data():
 
 scaler, kmeans, pca, df = load_models_and_data()
 
-# Check that data and models loaded properly
-if df is None or 'tic' not in df.columns:
-    st.stop()
+# If TIC's GICS is 25 (need revision)
+# need to define scaler, kmeans, pca, df with correct files
+
+# If TIC's GICS is 35 (need revision)
+# need to define scaler, kmeans, pca, df with correct files
 
 # === 2. Define features used in clustering ===
 features = ['ROA', 'ROE', 'RD_Sales', 'Debt_Assets', 'Market_Book', 'ROA_vol', 'ROE_vol']
