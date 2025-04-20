@@ -1,4 +1,7 @@
 import streamlit as st
+import pandas as pd
+import joblib
+import matplotlib.pyplot as plt
 
 # Sidebar: Shared ticker input
 ticker = st.sidebar.text_input("🔍 Enter stock ticker", value=st.session_state.get("ticker", "AAPL"))
@@ -14,9 +17,6 @@ This page will display **peer companies** for the selected stock using clusterin
 
 # Placeholder for peer output
 st.info("Cluster analysis results for peers will appear here.")
-import streamlit as st
-import pandas as pd
-import joblib
 
 # Load model & data
 scaler = joblib.load('scaler.pkl')
@@ -42,8 +42,6 @@ if ticker in df['tic'].values:
     st.dataframe(cluster_peers)
 
     # Show PCA plot
-    import matplotlib.pyplot as plt
-
     fig, ax = plt.subplots(figsize=(8, 6))
     ax.scatter(df['pca_1'], df['pca_2'], c=df['cluster'], cmap='viridis', alpha=0.4)
     ax.scatter(company['pca_1'], company['pca_2'], color='red', s=100, label=ticker)
