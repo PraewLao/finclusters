@@ -1,55 +1,62 @@
 import streamlit as st
 import pandas as pd
-import joblib
 import matplotlib.pyplot as plt
+import joblib
+import os
 
-# Sidebar: Shared ticker input
-ticker = st.sidebar.text_input("🔍 Enter stock ticker", value=st.session_state.get("ticker", "AAPL"))
-st.session_state["ticker"] = ticker
+st.title("📊 Financial Ratio Cluster Finder")
 
-st.title(f"🔎 Peer Analysis for {ticker.upper()}")
+# === 1. Load model & data safely ===
+@st.cache_resource
+def load_models_and_data():
+    try:
+        scaler = joblib.load('scaler.pkl')
+        kmeans = joblib.load('kmeans_model.pkl')
+        pca = joblib.load('pca_transformer.pkl')
+        df = pd.read_csv('clustered_data.csv')
+        return scaler, kmeans, pca, df
+    except FileNotFoundError as e:
+        st.error(f"❌ File not found: {e.filename}")
+        return None, None, None, None
 
-st.markdown("""
-This page will display **peer companies** for the selected stock using clustering analysis.
+scaler, kmeans, pca, df = load_models_and_data()
 
-📌 _Cluster model file will be integrated soon._
-""")
+# Check that data and models loaded properly
+if df is None or 'tic' not in df.columns:
+    st.stop()
 
-# Placeholder for peer output
-st.info("Cluster analysis results for peers will appear here.")
-
-# Load model & data
-scaler = joblib.load('scaler.pkl')
-kmeans = joblib.load('kmeans_model.pkl')
-pca = joblib.load('pca_transformer.pkl')
-df = pd.read_csv('clustered_data.csv')
-
+# === 2. Define features used in clustering ===
 features = ['ROA', 'ROE', 'RD_Sales', 'Debt_Assets', 'Market_Book', 'ROA_vol', 'ROE_vol']
 
-st.title("Financial Ratio Cluster Finder")
+# === 3. Ticker Input ===
+ticker = st.text_input("Enter ticker symbol:").upper().strip()
 
-ticker = st.text_input("Enter ticker symbol:")
+if ticker:
+    if ticker in df['tic'].values:
+        company = df[df['tic'] == ticker].iloc[0]
+        cluster_id = int(company['cluster'])
 
-if ticker in df['tic'].values:
-    company = df[df['tic'] == ticker].iloc[0]
-    cluster_id = company['cluster']
-    
-    st.success(f"✅ {ticker} is in Cluster {int(cluster_id)}")
+        st.success(f"✅ {ticker} is in **Cluster {cluster_id}**")
 
-    # Show similar companies
-    st.subheader("Similar Companies in Cluster:")
-    cluster_peers = df[df['cluster'] == cluster_id][['tic', 'fyear']]
-    st.dataframe(cluster_peers)
+        # === 4. Show Similar Companies in Cluster ===
+        st.subheader("🏢 Similar Companies in the Same Cluster:")
+        cluster_peers = df[df['cluster'] == cluster_id][['tic', 'fyear']].sort_values(by='fyear', ascending=False).head(10)
+        st.dataframe(cluster_peers)
 
-    # Show PCA plot
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.scatter(df['pca_1'], df['pca_2'], c=df['cluster'], cmap='viridis', alpha=0.4)
-    ax.scatter(company['pca_1'], company['pca_2'], color='red', s=100, label=ticker)
-    ax.set_title('PCA Clustering Visualization')
-    ax.set_xlabel('PCA 1')
-    ax.set_ylabel('PCA 2')
-    ax.legend()
-    st.pyplot(fig)
-else:
-    if ticker != "":
+        # === 5. PCA Scatter Plot with Highlight ===
+        if 'pca_1' in df.columns and 'pca_2' in df.columns:
+            st.subheader("🧭 PCA Visualization of Clusters")
+            fig, ax = plt.subplots(figsize=(8, 6))
+            scatter = ax.scatter(df['pca_1'], df['pca_2'], c=df['cluster'], cmap='viridis', alpha=0.3, label='Companies')
+            ax.scatter(company['pca_1'], company['pca_2'], color='red', s=100, label=ticker, edgecolor='black')
+            ax.set_title('Cluster View with PCA')
+            ax.set_xlabel('PCA 1')
+            ax.set_ylabel('PCA 2')
+            ax.legend()
+            st.pyplot(fig)
+        else:
+            st.warning("⚠️ PCA columns not found in the data.")
+    else:
         st.error("❌ Ticker not found in dataset.")
+else:
+    st.info("ℹ️ Please enter a ticker symbol to begin.")
