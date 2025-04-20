@@ -83,7 +83,6 @@ if ticker:
                 analyst_growth = 0.03  # fixed terminal growth
                 analyst_return = (1 / forward_pe) + analyst_growth
                 st.success(f"📣 Analyst-Based Expected Return: **{round(analyst_return * 100, 2)}%**")
-                st.caption("Formula: 1 / Forward P/E + 3% (terminal growth assumption)")
             else:
                 st.info("Forward P/E not available. Analyst return estimate could not be calculated.")
         except:
