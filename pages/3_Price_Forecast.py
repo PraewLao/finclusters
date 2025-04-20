@@ -1,3 +1,4 @@
+# === 📁 pages/page3.py ===
 import streamlit as st
 import yfinance as yf
 import numpy as np
@@ -6,8 +7,6 @@ import numpy as np
 ticker = st.sidebar.text_input("🔍 Enter stock ticker", value=st.session_state.get("ticker", "AAPL"))
 st.session_state["ticker"] = ticker
 
-st.title(f"💰 Price Forecast for {ticker.upper()}")
-
 # === MAIN PAGE ===
 if ticker:
     try:
@@ -15,15 +14,13 @@ if ticker:
         stock_info = stock.info
 
         company_name = stock_info.get("longName", ticker.upper())
-        sector = stock_info.get("sector", "Unknown")
         forward_eps = stock_info.get("forwardEps", None)
 
-        st.markdown(f"**Company:** `{company_name}`")
-        st.markdown(f"**Sector:** `{sector}`")
+        st.title(f"💰 Price Forecast for {company_name}")
         st.markdown(f"**Forward EPS:** `{forward_eps}`")
 
         # === Model-based Price Forecast ===
-        model_expected_return = st.number_input("Enter Expected Return from Model (%)", min_value=0.0, max_value=100.0, value=8.0, step=0.01)
+        model_expected_return = st.number_input("", min_value=0.0, max_value=100.0, value=8.0, step=0.01, label_visibility="collapsed")
         model_return = model_expected_return / 100  # full precision
         terminal_growth = 0.03
 
