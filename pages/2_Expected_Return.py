@@ -14,9 +14,9 @@ def load_coefficients():
 def get_default_rf():
     try:
         rf_yield = yf.Ticker("^TNX").info["regularMarketPrice"] / 100
-        return round(rf_yield * 100, 2)  # as percent
+        return round(rf_yield * 100, 2)
     except:
-        return 4.0  # fallback value if API fails
+        return 4.0
 
 coeff_df = load_coefficients()
 default_rf = get_default_rf()
@@ -24,7 +24,7 @@ default_rf = get_default_rf()
 # === SIDEBAR ===
 st.sidebar.title("🔍 Stock Selection")
 ticker = st.sidebar.text_input("Enter stock ticker", value=st.session_state.get("ticker", "AAPL"))
-st.session_state["ticker"] = ticker  # store across pages
+st.session_state["ticker"] = ticker
 
 # === MAIN PAGE ===
 if ticker:
@@ -45,14 +45,12 @@ if ticker:
         intercept = row["intercept"].values[0]
         st.markdown(f"**Model used**: `{model_type}`")
 
-        # Extract coefficients
         coefs = []
         for i in range(1, 5):
             col = f"coef_{i}"
             if col in row.columns and not pd.isna(row[col].values[0]):
                 coefs.append(row[col].values[0])
 
-        # Use default hardcoded factor inputs internally
         factor_inputs = {
             "CAPM": [0.01],
             "FF3": [0.01, 0.02, -0.01],
@@ -60,34 +58,28 @@ if ticker:
         }
         x = np.array(factor_inputs[model_type])
 
-        # Risk-Free Rate input
         rf_percent = st.number_input("Enter Risk-Free Rate (%)", min_value=0.0, max_value=100.0, value=default_rf)
         rf = rf_percent / 100
 
-        # Predict return
         monthly_return = intercept + np.dot(coefs, x) + rf
+
+        # ✅ Save to session state for Page 3
+        st.session_state["expected_return"] = monthly_return
+
         st.success(f"📊 Expected Monthly Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
 
-        # === PEER RETURN RANGE (placeholder) ===
         st.markdown("---")
         st.subheader("🧠 Expected Return Range of Peers")
         st.info("Peer returns based on cluster analysis will be displayed here.")
 
-        # === ANALYST RETURN ESTIMATE ===
         st.markdown("---")
         st.subheader("📣 Expected Return by Analyst Forecasts")
-        
-        try:
-            forward_pe = stock_info.get("forwardPE", None)
-            if forward_pe and forward_pe > 0:
-                analyst_growth = 0.03  # fixed terminal growth
-                analyst_return = (1 / forward_pe) + analyst_growth
-                st.success(f"📣 Analyst-Based Expected Return: **{round(analyst_return * 100, 2)}%**")
-            else:
-                st.info("Forward P/E not available. Analyst return estimate could not be calculated.")
-        except:
-            st.error("⚠️ Unable to calculate analyst return due to missing or invalid data.")
-
+        forward_pe = stock_info.get("forwardPE", None)
+        if forward_pe and forward_pe > 0:
+            analyst_return = (1 / forward_pe) + 0.03
+            st.success(f"📣 Analyst-Based Expected Return: **{round(analyst_return * 100, 2)}%**")
+        else:
+            st.info("Forward P/E not available. Analyst return estimate could not be calculated.")
 
     except Exception as e:
         st.error(f"Error: {e}")
