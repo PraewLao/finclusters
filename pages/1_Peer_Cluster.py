@@ -2,65 +2,88 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import joblib
-import os
 
 st.title("📊 Financial Ratio Cluster Finder")
 
-# === 1. Load model & data safely ===
+# === Load Ticker & Sector Reference CSV ===
+TICKER_SECTOR_FILE = 'sector_model_coefficients_by_ticker_REPLACEMENT.csv'
+ticker_sector_df = pd.read_csv(TICKER_SECTOR_FILE)
 
-# If TIC's GICS is 35 (need revision)
+# === Sector-Specific Model and Feature Config ===
+MODEL_CONFIG = {
+    'GICS_35': {
+        'scaler': 'scaler_hc.pkl',
+        'kmeans': 'kmeans_model_hc.pkl',
+        'pca': 'pca_transformer_hc.pkl',
+        'data': 'clustered_data_hc.csv',
+        'features': ['ROA', 'ROE', 'ROA_vol', 'ROE_vol', 'RD_Sales', 'Debt_Assets', 'Market_Book', 'WC_TA', 'RE_TA']
+    },
+    'GICS_25': {
+        'scaler': 'scaler_cd.pkl',
+        'kmeans': 'kmeans_model_cd.pkl',
+        'pca': 'pca_transformer_cd.pkl',
+        'data': 'clustered_data_cd.csv',
+        'features': ['ROA', 'ROE', 'RD_Sales', 'Debt_Assets', 'Market_Book', 'WC_TA', 'RE_TA', 'ROA_vol', 'ROE_vol']
+    },
+    'GICS_45': {
+        'scaler': 'scaler_it.pkl',
+        'kmeans': 'kmeans_model_It.pkl',
+        'pca': 'pca_transformer_It.pkl',
+        'data': 'clustered_data_It.csv',
+        'features': ['ROA', 'ROE', 'ROA_vol', 'ROE_vol', 'RD_Sales', 'SGA_Sales', 'CapEx_Sales', 'Debt_Assets', 'Market_Book', 'WC_TA']
+    }
+}
+
+# === Model Loader ===
 @st.cache_resource
-def load_models_and_data():
-    try:
-        scaler = joblib.load('scaler_hc.pkl')
-        kmeans = joblib.load('kmeans_model_hc.pkl')
-        pca = joblib.load('pca_transformer_hc.pkl')
-        df = pd.read_csv('clustered_data_hc.csv')
-        return scaler, kmeans, pca, df
-    except FileNotFoundError as e:
-        st.error(f"❌ File not found: {e.filename}")
-        return None, None, None, None
+def load_models_and_data(sector_key):
+    cfg = MODEL_CONFIG[sector_key]
+    scaler = joblib.load(cfg['scaler'])
+    kmeans = joblib.load(cfg['kmeans'])
+    pca = joblib.load(cfg['pca'])
+    df = pd.read_csv(cfg['data'])
+    features = cfg['features']
+    return scaler, kmeans, pca, df, features
 
-scaler, kmeans, pca, df = load_models_and_data()
-
-# If TIC's GICS is 25 (need revision)
-# need to define scaler, kmeans, pca, df with correct files
-
-# If TIC's GICS is 35 (need revision)
-# need to define scaler, kmeans, pca, df with correct files
-
-# === 2. Define features used in clustering ===
-features = ['ROA', 'ROE', 'RD_Sales', 'Debt_Assets', 'Market_Book', 'ROA_vol', 'ROE_vol']
-
-# === 3. Ticker Input ===
+# === Ticker Input ===
 ticker = st.text_input("Enter ticker symbol:").upper().strip()
 
 if ticker:
-    if ticker in df['tic'].values:
-        company = df[df['tic'] == ticker].iloc[0]
-        cluster_id = int(company['cluster'])
+    if ticker in ticker_sector_df['ticker'].values:
+        sector_key = ticker_sector_df[ticker_sector_df['ticker'] == ticker]['sector'].iloc[0]
 
-        st.success(f"✅ {ticker} is in **Cluster {cluster_id}**")
+        st.info(f"🔍 {ticker} belongs to **{sector_key}** sector.")
 
-        # === 4. Show Similar Companies in Cluster ===
-        st.subheader("🏢 Similar Companies in the Same Cluster:")
-        cluster_peers = df[df['cluster'] == cluster_id][['tic', 'fyear']].sort_values(by='fyear', ascending=False).head(10)
-        st.dataframe(cluster_peers)
+        if sector_key in MODEL_CONFIG:
+            scaler, kmeans, pca, df, features = load_models_and_data(sector_key)
 
-        # === 5. PCA Scatter Plot with Highlight ===
-        if 'pca_1' in df.columns and 'pca_2' in df.columns:
-            st.subheader("🧭 PCA Visualization of Clusters")
-            fig, ax = plt.subplots(figsize=(8, 6))
-            scatter = ax.scatter(df['pca_1'], df['pca_2'], c=df['cluster'], cmap='viridis', alpha=0.3, label='Companies')
-            ax.scatter(company['pca_1'], company['pca_2'], color='red', s=100, label=ticker, edgecolor='black')
-            ax.set_title('Cluster View with PCA')
-            ax.set_xlabel('PCA 1')
-            ax.set_ylabel('PCA 2')
-            ax.legend()
-            st.pyplot(fig)
+            if ticker in df['tic'].values:
+                company = df[df['tic'] == ticker].iloc[0]
+                cluster_id = int(company['cluster'])
+
+                st.success(f"✅ {ticker} is in **Cluster {cluster_id}**")
+
+                # === Similar Companies ===
+                st.subheader("🏢 Similar Companies:")
+                peers = df[df['cluster'] == cluster_id][['tic', 'fyear']].sort_values(by='fyear', ascending=False).head(10)
+                st.dataframe(peers)
+
+                # === PCA Visualization ===
+                if 'pca_1' in df.columns and 'pca_2' in df.columns:
+                    st.subheader("🧭 PCA Cluster Visualization")
+                    fig, ax = plt.subplots(figsize=(8, 6))
+                    ax.scatter(df['pca_1'], df['pca_2'], c=df['cluster'], cmap='viridis', alpha=0.3)
+                    ax.scatter(company['pca_1'], company['pca_2'], color='red', s=100, label=ticker, edgecolor='black')
+                    ax.set_title('Cluster View with PCA')
+                    ax.set_xlabel('PCA 1')
+                    ax.set_ylabel('PCA 2')
+                    ax.legend()
+                    st.pyplot(fig)
+            else:
+                st.error("❌ Ticker not found in sector-specific data.")
         else:
-            st.warning("⚠️ PCA columns not found in the data.")
+            st.error("❌ No model defined for this GICS sector.")
     else:
-        st.error("❌ Ticker not found in dataset.")
+        st.error("❌ Ticker not found in sector reference CSV.")
 else:
     st.info("ℹ️ Please enter a ticker symbol to begin.")
