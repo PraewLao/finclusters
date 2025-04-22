@@ -27,9 +27,9 @@ MODEL_CONFIG = {
     },
     'GICS_45': {
         'scaler': 'scaler_it.pkl',
-        'kmeans': 'kmeans_model_It.pkl',
-        'pca': 'pca_transformer_It.pkl',
-        'data': 'clustered_data_It.csv',
+        'kmeans': 'kmeans_model_IT.pkl',
+        'pca': 'pca_transformer_IT.pkl',
+        'data': 'clustered_data_IT.csv',
         'features': ['ROA', 'ROE', 'ROA_vol', 'ROE_vol', 'RD_Sales', 'SGA_Sales', 'CapEx_Sales', 'Debt_Assets', 'Market_Book', 'WC_TA']
     }
 }
