@@ -26,10 +26,10 @@ MODEL_CONFIG = {
         'features': ['ROA', 'ROE', 'RD_Sales', 'Debt_Assets', 'Market_Book', 'WC_TA', 'RE_TA', 'ROA_vol', 'ROE_vol']
     },
     'GICS_45': {
-        'scaler': 'scaler_it.pkl',
+        'scaler': 'scaler_IT.pkl',
         'kmeans': 'kmeans_model_IT.pkl',
         'pca': 'pca_transformer_IT.pkl',
-        'data': 'clustered_data_IT.csv',
+        'data': 'clustered_data_cd_IT.csv',
         'features': ['ROA', 'ROE', 'ROA_vol', 'ROE_vol', 'RD_Sales', 'SGA_Sales', 'CapEx_Sales', 'Debt_Assets', 'Market_Book', 'WC_TA']
     }
 }
