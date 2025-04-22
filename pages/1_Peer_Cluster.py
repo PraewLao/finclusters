@@ -65,8 +65,12 @@ if ticker:
 
                 # === Similar Companies ===
                 st.subheader("🏢 Similar Companies:")
+                # Sort using 'fyear' but don't display it
                 peers = df[df['cluster'] == cluster_id][['tic', 'fyear']].sort_values(by='fyear', ascending=False).head(10)
-                st.dataframe(peers)
+                # Drop 'fyear' just for display
+                peers_display = peers.drop(columns=['fyear'])
+                st.dataframe(peers_display)
+              
 
                 # === PCA Visualization ===
                 if 'pca_1' in df.columns and 'pca_2' in df.columns:
