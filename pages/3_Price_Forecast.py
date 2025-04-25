@@ -43,10 +43,10 @@ try:
     peer_price_max = None
 
     if forward_eps and peer_min_return is not None and peer_max_return is not None:
-        if peer_min_return > terminal_growth:
-            peer_price_min = forward_eps / (peer_min_return - terminal_growth)
         if peer_max_return > terminal_growth:
-            peer_price_max = forward_eps / (peer_max_return - terminal_growth)
+            peer_price_min = forward_eps / (peer_max_return - terminal_growth)
+        if peer_min_return > terminal_growth:
+            peer_price_max = forward_eps / (peer_min_return - terminal_growth)
 
     # === Forecasted Price Summary ===
     st.markdown("---")
