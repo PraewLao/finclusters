@@ -51,12 +51,24 @@ try:
     # === Forecasted Price Summary ===
     st.markdown("---")
     st.subheader("📌 Forecasted Prices")
+    
+    # Prepare data for display
+    forecast_data = []
+    
     if model_price:
-        st.markdown(f"🧠 Model-Based Price Estimate: **${model_price:.2f}**")      
+        forecast_data.append(("🧠 Model-Based", f"${model_price:.2f}"))
+    
     if peer_price_min and peer_price_max:
-        st.write("📊 Peer-Based Price Range Estimate: ", f"**${peer_price_min:.2f} - ${peer_price_max:.2f}**")
+        peer_range = f"${peer_price_min:.2f} - ${peer_price_max:.2f}"
+        forecast_data.append(("📊 Peer-Based Range", peer_range))
+    
     if analyst_price:
-        st.markdown(f"📣 Analyst Price Estimate: **${analyst_price:.2f}**")
+        forecast_data.append(("📣 Analyst-Based", f"${analyst_price:.2f}"))
+    
+    # Display as table
+    if forecast_data:
+        forecast_df = pd.DataFrame(forecast_data, columns=["Estimate Type", "Price"])
+        st.table(forecast_df)
 
     # === 1-Year Chart ===
     hist = stock.history(period="1y")
