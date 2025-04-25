@@ -74,17 +74,36 @@ if ticker in ticker_sector_df['ticker'].values:
             peers_display = peers.drop(columns=['fyear'])
             st.dataframe(peers_display)
 
-            # === PCA Visualization ===
+            import plotly.express as px
+
             if 'pca_1' in df.columns and 'pca_2' in df.columns:
-                st.subheader("🧭 PCA Cluster Visualization")
-                fig, ax = plt.subplots(figsize=(8, 6))
-                ax.scatter(df['pca_1'], df['pca_2'], c=df['cluster'], cmap='viridis', alpha=0.3)
-                ax.scatter(company['pca_1'], company['pca_2'], color='red', s=100, label=ticker, edgecolor='black')
-                ax.set_title('Cluster View with PCA')
-                ax.set_xlabel('PCA 1')
-                ax.set_ylabel('PCA 2')
-                ax.legend()
-                st.pyplot(fig)
+            st.subheader("🧭 Interactive PCA Cluster Visualization")
+
+            # Add hover text combining ticker and fiscal year
+            df['hover_text'] = df['tic'] + " | Year: " + df['fyear'].astype(str)
+
+            # Plotly scatter
+            fig = px.scatter(
+            df, x='pca_1', y='pca_2', color='cluster',
+            hover_name='tic',
+            hover_data={'fyear': True, 'pca_1': False, 'pca_2': False},
+            color_continuous_scale='Viridis',
+            opacity=0.6,
+             title='PCA Cluster View (Interactive)'
+            )
+
+            # Highlight selected company
+             fig.add_scatter(
+                x=[company['pca_1']], y=[company['pca_2']],
+                mode='markers+text',
+                marker=dict(color='red', size=12, line=dict(color='black', width=1)),
+                text=[ticker],
+                textposition='top center',
+                name='Selected Company'
+            )
+
+            fig.update_layout(height=600, width=900)
+            st.plotly_chart(fig, use_container_width=True)
         else:
             st.error("❌ Ticker not found in sector-specific data.")
     else:
