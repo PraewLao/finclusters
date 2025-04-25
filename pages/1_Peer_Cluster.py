@@ -2,6 +2,20 @@ import streamlit as st
 import pandas as pd
 import joblib
 import plotly.express as px
+import yfinance as yf
+
+# Helper function to check if ticker is active
+def is_ticker_active(ticker_symbol):
+    try:
+        ticker_data = yf.Ticker(ticker_symbol)
+        info = ticker_data.info
+        price = info.get('currentPrice', None)
+        if price is not None:
+            return True
+        else:
+            return False
+    except Exception as e:
+        return False
 
 # === SIDEBAR (Live Global Ticker Input) ===
 ticker = st.sidebar.text_input("🔍 Enter stock ticker", value=st.session_state.get("ticker", "")).upper().strip()
@@ -71,16 +85,28 @@ if ticker in ticker_sector_df['ticker'].values:
             # === Peer Companies ===
             # Get most recent data per ticker
             peers_recent = (
-            df[df['cluster'] == cluster_id]
-            .sort_values(by=['tic', 'fyear'], ascending=[True, False])
-            .drop_duplicates(subset='tic')  # Keep latest year per ticker
-            .sort_values(by='fyear', ascending=False)  # Sort peers by recency overall
-            .head(10)  # Show top 10 peers
-        )
+                df[df['cluster'] == cluster_id]
+                .sort_values(by=['tic', 'fyear'], ascending=[True, False])
+                .drop_duplicates(subset='tic')  # Keep latest year per ticker
+                .sort_values(by='fyear', ascending=False)  # Sort peers by recency overall
+            )
 
-            # Show only tickers
-            st.subheader("🏢 Peer Companies:")
-            st.dataframe(peers_recent[['tic']].reset_index(drop=True))
+            # Check if peer tickers are active
+            active_peers = []
+            for peer_ticker in peers_recent['tic']:
+                if is_ticker_active(peer_ticker):
+                    active_peers.append(peer_ticker)
+            
+            # Limit to top 10 active peers
+            active_peers = active_peers[:10]
+            
+            # Show only active peer tickers
+            if active_peers:
+                st.subheader("🏢 Peer Companies (Active Only):")
+                st.dataframe(pd.DataFrame(active_peers, columns=['Ticker']).reset_index(drop=True))
+            else:
+                st.warning("⚠️ No active peers found for this cluster.")
+
 
             # === Cluster Visualization ===
             if 'pca_1' in df.columns and 'pca_2' in df.columns:
