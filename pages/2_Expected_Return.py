@@ -18,26 +18,26 @@ def get_default_rf():
     except:
         return 4.0
 
-# Load data
+# Load model data and treasury yield
 coeff_df = load_coefficients()
 default_rf = get_default_rf()
 
-# Sidebar input
+# === SIDEBAR ===
 st.sidebar.title("🔍 Stock Selection")
 ticker = st.sidebar.text_input("Enter stock ticker", value=st.session_state.get("ticker", "AAPL"))
 st.session_state["ticker"] = ticker
 
-# Main page logic
+# === MAIN PAGE ===
 if ticker:
     try:
         stock_info = yf.Ticker(ticker).info
         company_name = stock_info.get("longName", ticker.upper())
-        sector = stock_info.get("sector", "Unknown")
+        sector_name = stock_info.get("sector", "Unknown")
 
         st.title(f"📈 Expected Return on {company_name} ({ticker.upper()})")
-        st.markdown(f"**Sector:** `{sector}`")
+        st.markdown(f"**Sector:** `{sector_name}`")
 
-        # Match ticker with model data
+        # Match ticker with model coefficients
         row = coeff_df[coeff_df["ticker"].str.upper() == ticker.upper()]
         if row.empty:
             st.error("❌ Ticker not found in model data.")
@@ -47,28 +47,28 @@ if ticker:
         intercept = row["intercept"].values[0]
         st.markdown(f"**Model used**: `{model_type}`")
 
+        # Extract sector code from CSV (e.g. GICS_35, GICS_45)
+        sector_code = row["sector"].values[0] if "sector" in row.columns else "Unknown"
+        st.markdown(f"**GICS Sector Code (from file):** `{sector_code}`")
+
+        # Extract coefficients
         coefs = []
         for i in range(1, 5):
             col = f"coef_{i}"
             if col in row.columns and not pd.isna(row[col].values[0]):
                 coefs.append(row[col].values[0])
 
-        # Get the industry name
-        industry = row["industry"].values[0] if "industry" in row.columns else "Unknown"
-
-
-        # Default factor values
+        # Default factor inputs
         factor_inputs = {
             "CAPM": [0.01],
             "FF3": [0.01, 0.02, -0.01],
             "Carhart": [0.01, 0.02, -0.01, 0.015]
         }
 
-        # Toggle for CAPM in Healthcare (35) or IT (45)
-        if model_type == "CAPM" and industry in ["Healthcare", "Information Technology"]:
+        # Show toggle if CAPM and GICS_35 or GICS_45
+        if model_type == "CAPM" and sector_code in ["GICS_35", "GICS_45"]:
             use_forward = st.toggle("Use forward-looking market premium (4.42%)?", value=False)
             factor_inputs["CAPM"] = [0.0442] if use_forward else [0.01]
-
 
         # Calculate expected return
         x = np.array(factor_inputs[model_type])
@@ -76,17 +76,17 @@ if ticker:
         rf = rf_percent / 100
         monthly_return = intercept + np.dot(coefs, x) + rf
 
-        # Save to session state
+        # Save to session state for Page 3
         st.session_state["expected_return"] = monthly_return
 
         st.success(f"🧠 Expected Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
 
-        # Peer section placeholder
+        # === Peer Range Placeholder ===
         st.markdown("---")
         st.subheader("📊 Expected Return Range of Peers")
         st.info("Peer returns based on cluster analysis will be displayed here.")
 
-        # Analyst forecast section
+        # === Analyst Forecast Section ===
         st.markdown("---")
         st.subheader("📣 Expected Return by Analyst Forecasts")
         forward_pe = stock_info.get("forwardPE", None)
