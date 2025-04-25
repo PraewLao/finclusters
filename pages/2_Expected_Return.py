@@ -125,6 +125,11 @@ try:
             if peer_returns:
                 st.success(f"📉 Lowest Peer Return: **{min(peer_returns):.2%}**")
                 st.success(f"📈 Highest Peer Return: **{max(peer_returns):.2%}**")
+            
+                # Save to session state for Page 3
+                st.session_state["peer_min_return"] = min(peer_returns)
+                st.session_state["peer_max_return"] = max(peer_returns)
+            
             else:
                 st.info("No valid expected return could be calculated for peers.")
 
