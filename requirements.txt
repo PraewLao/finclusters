@@ -6,3 +6,4 @@ matplotlib
 joblib
 scikit-learn
 requests
+plotly.express
