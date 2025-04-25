@@ -6,7 +6,7 @@ with st.sidebar:
     ticker = st.text_input("Enter stock ticker (e.g. AAPL)", value=st.session_state.get("ticker", "")).upper().strip()
     st.session_state["ticker"] = ticker
 
-st.title("Welcome to [Placeholder] App")
+st.title("Welcome to FinCluster App")
 # Introduction Text
 st.markdown("""
 Welcome to the **Financial Ratio Cluster Finder** and **Return Forecasting** platform!
