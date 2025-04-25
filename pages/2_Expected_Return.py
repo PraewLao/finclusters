@@ -1,4 +1,4 @@
-import streamlit as st
+ import streamlit as st
  import yfinance as yf
  import pandas as pd
  import numpy as np
@@ -21,8 +21,8 @@ import streamlit as st
  # Load model data and treasury yield
  coeff_df = load_coefficients()
  default_rf = get_default_rf()
-
-# === SIDEBAR (Live Global Ticker Input) ===
+ 
+ # === SIDEBAR (Live Global Ticker Input) ===
  ticker = st.sidebar.text_input("🔍 Enter stock ticker", value=st.session_state.get("ticker", "")).upper().strip()
  st.session_state["ticker"] = ticker
  
