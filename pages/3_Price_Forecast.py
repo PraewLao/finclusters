@@ -67,9 +67,9 @@ try:
         forecast_data.append(("📣 Analyst-Based", f"{analyst_price:.2f}"))
     
     # Display as table without index
-if forecast_data:
-    forecast_df = pd.DataFrame(forecast_data, columns=["Estimate Type", "Price"])
-    st.dataframe(forecast_df, use_container_width=True, hide_index=True)
+    if forecast_data:
+        forecast_df = pd.DataFrame(forecast_data, columns=["Estimate Type", "Price"])
+        st.dataframe(forecast_df, use_container_width=True, hide_index=True)
 
     # === 1-Year Chart ===
     hist = stock.history(period="1y")
