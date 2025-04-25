@@ -22,8 +22,10 @@ def get_default_rf():
 coeff_df = load_coefficients()
 default_rf = get_default_rf()
 
-# === SIDEBAR (Shared Input from Main App) ===
-ticker = st.session_state.get("ticker", "")
+# === SIDEBAR (Live Global Ticker Input) ===
+ticker = st.sidebar.text_input("🔍 Enter stock ticker", value=st.session_state.get("ticker", "")).upper().strip()
+st.session_state["ticker"] = ticker
+
 if not ticker:
     st.warning("Please enter a stock ticker in the sidebar.")
     st.stop()
