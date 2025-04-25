@@ -3,13 +3,13 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 
-# Load model coefficients
+# Load model coefficients from CSV
 @st.cache_data
 def load_coefficients():
     url = "https://raw.githubusercontent.com/PraewLao/price-and-peers-app/main/sector_model_coefficients_by_ticker_REPLACEMENT.csv"
     return pd.read_csv(url)
 
-# Get default 10-year treasury yield
+# Get default 10-year treasury yield from Yahoo Finance
 @st.cache_data
 def get_default_rf():
     try:
@@ -18,15 +18,16 @@ def get_default_rf():
     except:
         return 4.0
 
+# Load data
 coeff_df = load_coefficients()
 default_rf = get_default_rf()
 
-# === SIDEBAR ===
+# Sidebar input
 st.sidebar.title("🔍 Stock Selection")
 ticker = st.sidebar.text_input("Enter stock ticker", value=st.session_state.get("ticker", "AAPL"))
 st.session_state["ticker"] = ticker
 
-# === MAIN PAGE ===
+# Main page logic
 if ticker:
     try:
         stock_info = yf.Ticker(ticker).info
@@ -36,6 +37,7 @@ if ticker:
         st.title(f"📈 Expected Return on {company_name} ({ticker.upper()})")
         st.markdown(f"**Sector:** `{sector}`")
 
+        # Match ticker with model data
         row = coeff_df[coeff_df["ticker"].str.upper() == ticker.upper()]
         if row.empty:
             st.error("❌ Ticker not found in model data.")
@@ -51,27 +53,38 @@ if ticker:
             if col in row.columns and not pd.isna(row[col].values[0]):
                 coefs.append(row[col].values[0])
 
+        # Detect sector for CAPM toggle
+        gics_sector = str(row["gics"].values[0]) if "gics" in row.columns else "Unknown"
+
+        # Default factor values
         factor_inputs = {
             "CAPM": [0.01],
             "FF3": [0.01, 0.02, -0.01],
             "Carhart": [0.01, 0.02, -0.01, 0.015]
         }
-        x = np.array(factor_inputs[model_type])
 
+        # Toggle for CAPM in Healthcare or IT sectors
+        if model_type == "CAPM" and gics_sector in ["35", "45"]:
+            use_forward = st.toggle("Use forward-looking market premium (4.42%)?", value=False)
+            factor_inputs["CAPM"] = [0.0442] if use_forward else [0.01]
+
+        # Calculate expected return
+        x = np.array(factor_inputs[model_type])
         rf_percent = st.number_input("Enter Risk-Free Rate (%)", min_value=0.0, max_value=100.0, value=default_rf)
         rf = rf_percent / 100
-
         monthly_return = intercept + np.dot(coefs, x) + rf
 
-        # ✅ Save to session state for Page 3
+        # Save to session state
         st.session_state["expected_return"] = monthly_return
 
         st.success(f"🧠 Expected Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
 
+        # Peer section placeholder
         st.markdown("---")
         st.subheader("📊 Expected Return Range of Peers")
         st.info("Peer returns based on cluster analysis will be displayed here.")
 
+        # Analyst forecast section
         st.markdown("---")
         st.subheader("📣 Expected Return by Analyst Forecasts")
         forward_pe = stock_info.get("forwardPE", None)
