@@ -88,29 +88,49 @@ try:
     st.success(f"🧠 Expected Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
 
     # === Find Peers from Same Cluster ===
-    # Filter peers from same sector and cluster
-    peers = df[(df['sector'] == sector) & (df['cluster'] == cluster_id)]
+
+    # First: get this company's cluster and sector
+    cluster_id = row["cluster"].values[0]
+    sector = row["sector"].values[0]
     
-    # Only keep peers that are still active
-    peers = peers[peers['ticker'].isin(active_tickers)]
+    # Define premiums again based on toggle
+    if model_type == "CAPM":
+        mkt_premium = factor_inputs["CAPM"][0]
+    elif model_type == "FF3":
+        mkt_premium, smb_premium, hml_premium = factor_inputs["FF3"]
+    elif model_type == "Carhart":
+        mkt_premium, smb_premium, hml_premium, mom_premium = factor_inputs["Carhart"]
+    
+    # Filter peers from same sector and cluster
+    peers = coeff_df[
+        (coeff_df["sector"] == sector) &
+        (coeff_df["cluster"] == cluster_id) &
+        (coeff_df["ticker"].str.upper() != ticker.upper()) &  # exclude current stock
+        (coeff_df["ticker"].str.upper().isin(active_tickers))
+    ]
     
     # Calculate expected return for each peer
     peer_expected_returns = []
     
     for _, peer in peers.iterrows():
-        if sector in ['GICS_35', 'GICS_45']:  # CAPM sectors
-            expected_return_peer = rf + (peer['mkt_excess'] * mkt_premium)
-        elif sector == 'GICS_25':  # FF3 sector
-            expected_return_peer = (
-                rf + (peer['mkt_excess'] * mkt_premium) +
-                (peer['smb'] * smb_premium) +
-                (peer['hml'] * hml_premium)
-            )
+        intercept_peer = peer['intercept']
+        coefs_peer = []
+        for i in range(1, 5):
+            col = f"coef_{i}"
+            if col in peer and not pd.isna(peer[col]):
+                coefs_peer.append(peer[col])
+        if model_type == "CAPM":
+            x_peer = [mkt_premium]
+        elif model_type == "FF3":
+            x_peer = [mkt_premium, smb_premium, hml_premium]
+        elif model_type == "Carhart":
+            x_peer = [mkt_premium, smb_premium, hml_premium, mom_premium]
         else:
-            expected_return_peer = None
+            x_peer = []
     
-        if expected_return_peer is not None:
-            peer_expected_returns.append(expected_return_peer)
+        if len(x_peer) == len(coefs_peer):
+            expected_peer = intercept_peer + np.dot(coefs_peer, x_peer) + rf
+            peer_expected_returns.append(expected_peer)
     
     # Show min and max expected returns
     if peer_expected_returns:
@@ -121,7 +141,7 @@ try:
         st.write(f"Lowest Expected Return: **{min_peer_return:.2%}**")
         st.write(f"Highest Expected Return: **{max_peer_return:.2%}**")
     else:
-        st.warning("⚠️ No active peers found to calculate expected return range.")
+        st.info("⚠️ No active peers found to calculate expected return range.")
 
 
     # === Analyst Forecast Section ===
