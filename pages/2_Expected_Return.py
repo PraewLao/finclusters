@@ -53,8 +53,9 @@ if ticker:
             if col in row.columns and not pd.isna(row[col].values[0]):
                 coefs.append(row[col].values[0])
 
-        # Convert GICS sector to int for matching
-        gics_sector = int(float(row["gics"].values[0])) if "gics" in row.columns else -1
+        # Get the industry name
+        industry = row["industry"].values[0] if "industry" in row.columns else "Unknown"
+
 
         # Default factor values
         factor_inputs = {
@@ -64,9 +65,10 @@ if ticker:
         }
 
         # Toggle for CAPM in Healthcare (35) or IT (45)
-        if model_type == "CAPM" and gics_sector in [35, 45]:
+        if model_type == "CAPM" and industry in ["Healthcare", "Information Technology"]:
             use_forward = st.toggle("Use forward-looking market premium (4.42%)?", value=False)
             factor_inputs["CAPM"] = [0.0442] if use_forward else [0.01]
+
 
         # Calculate expected return
         x = np.array(factor_inputs[model_type])
