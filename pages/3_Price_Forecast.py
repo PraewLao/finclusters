@@ -60,7 +60,7 @@ try:
         forecast_data.append(("🧠 Model-Based", f"${model_price:.2f}"))
     
     if peer_price_min and peer_price_max:
-        peer_range = f"{peer_price_min:.2f} - {peer_price_max:.2f}"
+        peer_range = f"$ {peer_price_min:.2f} - $ {peer_price_max:.2f}"
         forecast_data.append(("📊 Peer-Based Range", peer_range))
     
     if analyst_price:
