@@ -54,8 +54,9 @@ try:
     intercept = row["intercept"].values[0]
     st.markdown(f"**Model used**: `{model_type}`")
 
-    # Extract sector code from CSV (e.g. GICS_35, GICS_45)
+    # Extract sector code and cluster id
     sector_code = row["sector"].values[0] if "sector" in row.columns else "Unknown"
+    cluster_id = row["cluster"].values[0] if "cluster" in row.columns else None
 
     # Extract coefficients
     coefs = []
@@ -89,10 +90,6 @@ try:
 
     # === Find Peers from Same Cluster ===
 
-    # First: get this company's cluster and sector
-    cluster_id = row["cluster"].values[0]
-    sector = row["sector"].values[0]
-    
     # Define premiums again based on toggle
     if model_type == "CAPM":
         mkt_premium = factor_inputs["CAPM"][0]
@@ -100,18 +97,18 @@ try:
         mkt_premium, smb_premium, hml_premium = factor_inputs["FF3"]
     elif model_type == "Carhart":
         mkt_premium, smb_premium, hml_premium, mom_premium = factor_inputs["Carhart"]
-    
+
     # Filter peers from same sector and cluster
     peers = coeff_df[
-        (coeff_df["sector"] == sector) &
+        (coeff_df["sector"] == sector_code) &
         (coeff_df["cluster"] == cluster_id) &
-        (coeff_df["ticker"].str.upper() != ticker.upper()) &  # exclude current stock
+        (coeff_df["ticker"].str.upper() != ticker.upper()) &
         (coeff_df["ticker"].str.upper().isin(active_tickers))
     ]
-    
+
     # Calculate expected return for each peer
     peer_expected_returns = []
-    
+
     for _, peer in peers.iterrows():
         intercept_peer = peer['intercept']
         coefs_peer = []
@@ -127,22 +124,21 @@ try:
             x_peer = [mkt_premium, smb_premium, hml_premium, mom_premium]
         else:
             x_peer = []
-    
+
         if len(x_peer) == len(coefs_peer):
             expected_peer = intercept_peer + np.dot(coefs_peer, x_peer) + rf
             peer_expected_returns.append(expected_peer)
-    
+
     # Show min and max expected returns
     if peer_expected_returns:
         min_peer_return = min(peer_expected_returns)
         max_peer_return = max(peer_expected_returns)
-    
+
         st.subheader("📈 Peer Companies' Expected Return Range:")
         st.write(f"Lowest Expected Return: **{min_peer_return:.2%}**")
         st.write(f"Highest Expected Return: **{max_peer_return:.2%}**")
     else:
         st.info("⚠️ No active peers found to calculate expected return range.")
-
 
     # === Analyst Forecast Section ===
     st.markdown("---")
@@ -156,3 +152,4 @@ try:
 
 except Exception as e:
     st.error(f"Error: {e}")
+    
