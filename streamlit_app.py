@@ -2,7 +2,7 @@ import streamlit as st
 
 # === TICKER INPUT (PERSISTENT ACROSS ALL PAGES) ===
 with st.sidebar:
-    st.markdown("### 📌 Start here")
+    st.markdown("### 👉 Start here")
     ticker = st.text_input("Enter stock ticker", value=st.session_state.get("ticker", "")).upper().strip()
     st.session_state["ticker"] = ticker
 
