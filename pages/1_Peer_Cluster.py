@@ -85,8 +85,9 @@ if ticker in ticker_sector_df['ticker'].values:
             # Filter peers that are in active companies list
             active_peers = peers_recent[peers_recent['tic'].isin(active_tickers)]
             
-            # Limit to top 10 active peers
-            active_peers = active_peers.head(10)
+            # Save to session state for use on Page 2
+            st.session_state["peer_tickers"] = active_peers["tic"].str.upper().tolist()
+
             
             # Show only active peer tickers
             if not active_peers.empty:
