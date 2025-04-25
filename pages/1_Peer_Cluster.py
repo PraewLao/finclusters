@@ -46,7 +46,10 @@ def load_models_and_data(sector_key):
     return scaler, kmeans, pca, df, features
 
 # === Ticker Input ===
-ticker = st.text_input("Enter ticker symbol:").upper().strip()
+ticker = st.session_state.get("ticker", "")
+if not ticker:
+    st.warning("Please enter a stock ticker in the sidebar on the home page.")
+    st.stop()
 
 if ticker:
     if ticker in ticker_sector_df['ticker'].values:
