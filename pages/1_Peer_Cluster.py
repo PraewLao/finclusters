@@ -3,6 +3,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import joblib
 
+# === SIDEBAR (Live Global Ticker Input) ===
+ticker = st.sidebar.text_input("🔍 Enter stock ticker", value=st.session_state.get("ticker", "")).upper().strip()
+st.session_state["ticker"] = ticker
+
+if not ticker:
+    st.warning("Please enter a stock ticker in the sidebar.")
+    st.stop()
+
 st.title("📊 Financial Ratio Cluster Finder")
 
 # === Load Ticker & Sector Reference CSV ===
@@ -45,12 +53,7 @@ def load_models_and_data(sector_key):
     features = cfg['features']
     return scaler, kmeans, pca, df, features
 
-# === Ticker Input ===
-ticker = st.session_state.get("ticker", "")
-if not ticker:
-    st.warning("Please enter a stock ticker in the sidebar on the home page.")
-    st.stop()
-
+# === Main Logic ===
 if ticker in ticker_sector_df['ticker'].values:
     sector_key = ticker_sector_df[ticker_sector_df['ticker'] == ticker]['sector'].iloc[0]
 
