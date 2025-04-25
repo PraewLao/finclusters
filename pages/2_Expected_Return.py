@@ -9,6 +9,11 @@ def load_coefficients():
     url = "https://raw.githubusercontent.com/PraewLao/price-and-peers-app/main/sector_model_coefficients_by_ticker_REPLACEMENT.csv"
     return pd.read_csv(url)
 
+# Load Active Companies CSV for Peer Filtering
+ACTIVE_COMPANIES_URL = "https://raw.githubusercontent.com/PraewLao/price-and-peers-app/main/Active_Companies.csv"
+active_companies_df = pd.read_csv(ACTIVE_COMPANIES_URL)
+active_tickers = set(active_companies_df['Ticker'].str.upper())
+
 # Get default 10-year treasury yield from Yahoo Finance
 @st.cache_data
 def get_default_rf():
@@ -82,10 +87,41 @@ try:
 
     st.success(f"🧠 Expected Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
 
-    # === Peer Range Placeholder ===
-    st.markdown("---")
-    st.subheader("📊 Expected Return Range of Peers")
-    st.info("Peer returns based on cluster analysis will be displayed here.")
+    # === Find Peers from Same Cluster ===
+    # Filter peers from same cluster
+    peers = coef_df[(coef_df['sector'] == sector) & (coef_df['cluster'] == cluster_id)]
+    
+    # Only keep peers that are still active
+    peers = peers[peers['ticker'].isin(active_tickers)]
+    
+    # Calculate expected return for each peer
+    peer_expected_returns = []
+    
+    for _, peer in peers.iterrows():
+        if sector in ['GICS_35', 'GICS_45']:  # CAPM sectors
+            expected_return_peer = rf + (peer['mkt_excess'] * mkt_premium)
+        elif sector == 'GICS_25':  # FF3 sector
+            expected_return_peer = (
+                rf + (peer['mkt_excess'] * mkt_premium) +
+                (peer['smb'] * smb_premium) +
+                (peer['hml'] * hml_premium)
+            )
+        else:
+            expected_return_peer = None
+    
+        if expected_return_peer is not None:
+            peer_expected_returns.append(expected_return_peer)
+    
+    # Show min and max expected returns
+    if peer_expected_returns:
+        min_peer_return = min(peer_expected_returns)
+        max_peer_return = max(peer_expected_returns)
+    
+        st.subheader("📈 Peer Companies' Expected Return Range:")
+        st.write(f"Lowest Expected Return: **{min_peer_return:.2%}**")
+        st.write(f"Highest Expected Return: **{max_peer_return:.2%}**")
+    else:
+        st.warning("⚠️ No active peers found to calculate expected return range.")
 
     # === Analyst Forecast Section ===
     st.markdown("---")
