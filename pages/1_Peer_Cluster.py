@@ -79,8 +79,8 @@ if ticker in ticker_sector_df['ticker'].values:
         )
 
             # Show only tickers
-            st.subheader("🏢 Peer Companies (Most Recent Data):")
-            st.dataframe(peers_recent[['tic']])
+            st.subheader("🏢 Peer Companies:")
+            st.dataframe(peers_recent[['tic']].reset_index(drop=True))
 
             # === Cluster Visualization ===
             if 'pca_1' in df.columns and 'pca_2' in df.columns:
