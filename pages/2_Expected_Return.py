@@ -49,7 +49,6 @@ if ticker:
 
         # Extract sector code from CSV (e.g. GICS_35, GICS_45)
         sector_code = row["sector"].values[0] if "sector" in row.columns else "Unknown"
-        st.markdown(f"**GICS Sector Code (from file):** `{sector_code}`")
 
         # Extract coefficients
         coefs = []
@@ -67,7 +66,7 @@ if ticker:
 
         # Show toggle if CAPM and GICS_35 or GICS_45
         if model_type == "CAPM" and sector_code in ["GICS_35", "GICS_45"]:
-            use_forward = st.toggle("Use forward-looking market premium (4.42%)?", value=False)
+            use_forward = st.toggle("Use forward-looking market premium?", value=False)
             factor_inputs["CAPM"] = [0.0442] if use_forward else [0.01]
 
         # Calculate expected return
