@@ -82,10 +82,63 @@ try:
 
     st.success(f"🧠 Expected Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
 
-    # === Peer Range Placeholder ===
+    # === Peer Range Calculation ===
     st.markdown("---")
     st.subheader("📊 Expected Return Range of Peers")
-    st.info("Peer returns based on cluster analysis will be displayed here.")
+    
+    try:
+        # Get sector and cluster of the selected stock
+        cluster_id = row["cluster"].values[0] if "cluster" in row.columns else None
+        sector_code = row["sector"].values[0]
+    
+        if pd.isna(cluster_id):
+            st.info("This company is not assigned to a cluster. Peer expected return range cannot be calculated.")
+        else:
+            # Filter peer group: same sector + cluster, not the selected stock, and cluster is not null
+            peers = coeff_df[
+                (coeff_df["sector"] == sector_code) &
+                (coeff_df["cluster"] == cluster_id) &
+                (coeff_df["ticker"].str.upper() != ticker.upper()) &
+                (coeff_df["cluster"].notna())
+            ]
+    
+            # Calculate expected return for each peer
+            peer_returns = []
+            for _, peer in peers.iterrows():
+                model = peer["model"]
+                intercept_peer = peer["intercept"]
+    
+                coefs_peer = []
+                for i in range(1, 5):
+                    col = f"coef_{i}"
+                    if col in peer and not pd.isna(peer[col]):
+                        coefs_peer.append(peer[col])
+    
+                # Set up factor vector x based on model type
+                if model == "CAPM":
+                    x_peer = [0.0442]  # or 0.01 if you want historical premium instead
+                elif model == "FF3":
+                    x_peer = [0.01, 0.02, -0.01]
+                elif model == "Carhart":
+                    x_peer = [0.01, 0.02, -0.01, 0.015]
+                else:
+                    x_peer = []
+    
+                # Compute expected return if lengths match
+                if len(x_peer) == len(coefs_peer):
+                    expected_return_peer = intercept_peer + np.dot(coefs_peer, x_peer) + rf
+                    peer_returns.append(expected_return_peer)
+    
+            # Display results
+            if peer_returns:
+                st.success(f"📉 Lowest Peer Return: **{min(peer_returns):.2%}**")
+                st.success(f"📈 Highest Peer Return: **{max(peer_returns):.2%}**")
+            else:
+                st.info("No valid peers with complete data were found in this cluster.")
+    
+    except Exception as e:
+        st.error(f"Error calculating peer return range: {e}")
+
 
     # === Analyst Forecast Section ===
     st.markdown("---")
