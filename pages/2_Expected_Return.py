@@ -88,8 +88,9 @@ try:
     
     try:
         # Get sector and cluster of the selected stock
-        cluster_id = row["cluster"].values[0] if "cluster" in row.columns else None
-        sector_code = row["sector"].values[0]
+        cluster_id = row.at[0, "cluster"] if "cluster" in row.columns and not pd.isna(row.at[0, "cluster"]) else None
+        sector_code = row.at[0, "sector"]
+
     
         if pd.isna(cluster_id):
             st.info("This company is not assigned to a cluster. Peer expected return range cannot be calculated.")
