@@ -35,18 +35,26 @@ try:
     if forward_pe and forward_eps:
         analyst_price = forward_pe * forward_eps
 
-    # Peer forecast (placeholder)
-    peer_price = None
-    if model_price and analyst_price:
-        peer_price = (model_price + analyst_price) / 2
+    # Peer forecast (real one)
+    peer_min_return = st.session_state.get("peer_min_return", None)
+    peer_max_return = st.session_state.get("peer_max_return", None)
+
+    peer_price_min = None
+    peer_price_max = None
+
+    if forward_eps and peer_min_return is not None and peer_max_return is not None:
+        if peer_min_return > terminal_growth:
+            peer_price_min = forward_eps / (peer_min_return - terminal_growth)
+        if peer_max_return > terminal_growth:
+            peer_price_max = forward_eps / (peer_max_return - terminal_growth)
 
     # === Forecasted Price Summary ===
     st.markdown("---")
     st.subheader("📌 Forecasted Prices")
     if model_price:
         st.markdown(f"🧠 Model-Based Price Estimate: **${model_price:.2f}**")
-    if peer_price:
-        st.markdown(f"📊 Peer Price Estimate (Placeholder): **${peer_price:.2f}**")
+    if peer_price_min and peer_price_max:
+        st.markdown(f"📊 Peer-Based Price Range Estimate: **${peer_price_min:.2f} ~ ${peer_price_max:.2f}**")
     if analyst_price:
         st.markdown(f"📣 Analyst Price Estimate: **${analyst_price:.2f}**")
 
