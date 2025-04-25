@@ -54,7 +54,7 @@ try:
     if model_price:
         st.markdown(f"🧠 Model-Based Price Estimate: **${model_price:.2f}**")
     if peer_price_min and peer_price_max:
-        st.markdown(f"📊 Peer-Based Price Range Estimate: **${peer_price_min:.2f}** – **${peer_price_max:.2f}**")
+        st.write("🏢 Peer-Based Price Range Estimate:", f"**${peer_price_min:.2f} – ${peer_price_max:.2f}**")
     if analyst_price:
         st.markdown(f"📣 Analyst Price Estimate: **${analyst_price:.2f}**")
 
