@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 import joblib
+import plotly.express as px
 
 # === SIDEBAR (Live Global Ticker Input) ===
 ticker = st.sidebar.text_input("🔍 Enter stock ticker", value=st.session_state.get("ticker", "")).upper().strip()
@@ -74,36 +74,34 @@ if ticker in ticker_sector_df['ticker'].values:
             peers_display = peers.drop(columns=['fyear'])
             st.dataframe(peers_display)
 
-            import plotly.express as px
-
+            # === Interactive PCA Visualization ===
             if 'pca_1' in df.columns and 'pca_2' in df.columns:
-            st.subheader("🧭 Interactive PCA Cluster Visualization")
+                st.subheader("🧭 Interactive PCA Cluster Visualization")
 
-            # Add hover text combining ticker and fiscal year
-            df['hover_text'] = df['tic'] + " | Year: " + df['fyear'].astype(str)
+                # Add hover text combining ticker and fiscal year
+                df['hover_text'] = df['tic'] + " | Year: " + df['fyear'].astype(str)
 
-            # Plotly scatter
-            fig = px.scatter(
-            df, x='pca_1', y='pca_2', color='cluster',
-            hover_name='tic',
-            hover_data={'fyear': True, 'pca_1': False, 'pca_2': False},
-            color_continuous_scale='Viridis',
-            opacity=0.6,
-             title='PCA Cluster View (Interactive)'
-            )
+                fig = px.scatter(
+                    df, x='pca_1', y='pca_2', color='cluster',
+                    hover_name='hover_text',
+                    hover_data={'fyear': False, 'pca_1': False, 'pca_2': False},
+                    color_continuous_scale='Viridis',
+                    opacity=0.6,
+                    title='PCA Cluster View (Interactive)'
+                )
 
-            # Highlight selected company
-             fig.add_scatter(
-                x=[company['pca_1']], y=[company['pca_2']],
-                mode='markers+text',
-                marker=dict(color='red', size=12, line=dict(color='black', width=1)),
-                text=[ticker],
-                textposition='top center',
-                name='Selected Company'
-            )
+                # Highlight selected company
+                fig.add_scatter(
+                    x=[company['pca_1']], y=[company['pca_2']],
+                    mode='markers+text',
+                    marker=dict(color='red', size=12, line=dict(color='black', width=1)),
+                    text=[ticker],
+                    textposition='top center',
+                    name='Selected Company'
+                )
 
-            fig.update_layout(height=600, width=900)
-            st.plotly_chart(fig, use_container_width=True)
+                fig.update_layout(height=600, width=900)
+                st.plotly_chart(fig, use_container_width=True)
         else:
             st.error("❌ Ticker not found in sector-specific data.")
     else:
