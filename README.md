@@ -1,4 +1,4 @@
-# PeerCluster: Multi-Industry Financial Clustering App
+# FinCluster: Multi-Industry Financial Clustering App
 
 A multi-page Streamlit app for clustering companies by financial ratios across Health Care (GICS 35), Consumer Discretionary (GICS 25), and Information Technology (GICS 45) sectors. The app helps identify peer companies and visualize cluster positions interactively.
 
