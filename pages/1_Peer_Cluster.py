@@ -90,7 +90,7 @@ if ticker in ticker_sector_df['ticker'].values:
             
             # Show only active peer tickers
             if not active_peers.empty:
-                st.subheader("🏢 Peer Companies (Active Only):")
+                st.subheader("🏢 Active Peer Companies")
                 st.dataframe(active_peers[['tic']].rename(columns={'tic': 'Ticker'}).reset_index(drop=True))
             else:
                 st.warning("⚠️ No active peers found for this cluster.")
