@@ -45,28 +45,17 @@ if ticker:
         intercept = row["intercept"].values[0]
         st.markdown(f"**Model used**: `{model_type}`")
 
-        # Coefficient list
         coefs = []
         for i in range(1, 5):
             col = f"coef_{i}"
             if col in row.columns and not pd.isna(row[col].values[0]):
                 coefs.append(row[col].values[0])
 
-        # Identify GICS sector
-        gics_sector = str(row["gics"].values[0]) if "gics" in row.columns else "Unknown"
-
-        # Default factor values
         factor_inputs = {
             "CAPM": [0.01],
             "FF3": [0.01, 0.02, -0.01],
             "Carhart": [0.01, 0.02, -0.01, 0.015]
         }
-
-        # Forward-looking toggle for CAPM in GICS 35 or 45
-        if model_type == "CAPM" and gics_sector in ["35", "45"]:
-            use_forward = st.toggle("Use forward-looking market premium (4.42%)?", value=False)
-            factor_inputs["CAPM"] = [0.0442] if use_forward else [0.01]
-
         x = np.array(factor_inputs[model_type])
 
         rf_percent = st.number_input("Enter Risk-Free Rate (%)", min_value=0.0, max_value=100.0, value=default_rf)
@@ -74,5 +63,23 @@ if ticker:
 
         monthly_return = intercept + np.dot(coefs, x) + rf
 
-        # Save for Page 3
+        # ✅ Save to session state for Page 3
         st.session_state["expected_return"] = monthly_return
+
+        st.success(f"🧠 Expected Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
+
+        st.markdown("---")
+        st.subheader("📊 Expected Return Range of Peers")
+        st.info("Peer returns based on cluster analysis will be displayed here.")
+
+        st.markdown("---")
+        st.subheader("📣 Expected Return by Analyst Forecasts")
+        forward_pe = stock_info.get("forwardPE", None)
+        if forward_pe and forward_pe > 0:
+            analyst_return = (1 / forward_pe) + 0.03
+            st.success(f"📣 Analyst-Based Expected Return: **{round(analyst_return * 100, 2)}%**")
+        else:
+            st.info("Forward P/E not available. Analyst return estimate could not be calculated.")
+
+    except Exception as e:
+        st.error(f"Error: {e}")
