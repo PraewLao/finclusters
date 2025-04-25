@@ -51,46 +51,40 @@ if not ticker:
     st.warning("Please enter a stock ticker in the sidebar on the home page.")
     st.stop()
 
-if ticker:
-    if ticker in ticker_sector_df['ticker'].values:
-        sector_key = ticker_sector_df[ticker_sector_df['ticker'] == ticker]['sector'].iloc[0]
+if ticker in ticker_sector_df['ticker'].values:
+    sector_key = ticker_sector_df[ticker_sector_df['ticker'] == ticker]['sector'].iloc[0]
 
-        st.info(f"🔍 {ticker} belongs to **{sector_key}** sector.")
+    st.info(f"🔍 {ticker} belongs to **{sector_key}** sector.")
 
-        if sector_key in MODEL_CONFIG:
-            scaler, kmeans, pca, df, features = load_models_and_data(sector_key)
+    if sector_key in MODEL_CONFIG:
+        scaler, kmeans, pca, df, features = load_models_and_data(sector_key)
 
-            if ticker in df['tic'].values:
-                company = df[df['tic'] == ticker].iloc[0]
-                cluster_id = int(company['cluster'])
+        if ticker in df['tic'].values:
+            company = df[df['tic'] == ticker].iloc[0]
+            cluster_id = int(company['cluster'])
 
-                st.success(f"✅ {ticker} is in **Cluster {cluster_id}**")
+            st.success(f"✅ {ticker} is in **Cluster {cluster_id}**")
 
-                # === Similar Companies ===
-                st.subheader("🏢 Similar Companies:")
-                # Sort using 'fyear' but don't display it
-                peers = df[df['cluster'] == cluster_id][['tic', 'fyear']].sort_values(by='fyear', ascending=False).head(10)
-                # Drop 'fyear' just for display
-                peers_display = peers.drop(columns=['fyear'])
-                st.dataframe(peers_display)
-              
+            # === Similar Companies ===
+            st.subheader("🏢 Similar Companies:")
+            peers = df[df['cluster'] == cluster_id][['tic', 'fyear']].sort_values(by='fyear', ascending=False).head(10)
+            peers_display = peers.drop(columns=['fyear'])
+            st.dataframe(peers_display)
 
-                # === PCA Visualization ===
-                if 'pca_1' in df.columns and 'pca_2' in df.columns:
-                    st.subheader("🧭 PCA Cluster Visualization")
-                    fig, ax = plt.subplots(figsize=(8, 6))
-                    ax.scatter(df['pca_1'], df['pca_2'], c=df['cluster'], cmap='viridis', alpha=0.3)
-                    ax.scatter(company['pca_1'], company['pca_2'], color='red', s=100, label=ticker, edgecolor='black')
-                    ax.set_title('Cluster View with PCA')
-                    ax.set_xlabel('PCA 1')
-                    ax.set_ylabel('PCA 2')
-                    ax.legend()
-                    st.pyplot(fig)
-            else:
-                st.error("❌ Ticker not found in sector-specific data.")
+            # === PCA Visualization ===
+            if 'pca_1' in df.columns and 'pca_2' in df.columns:
+                st.subheader("🧭 PCA Cluster Visualization")
+                fig, ax = plt.subplots(figsize=(8, 6))
+                ax.scatter(df['pca_1'], df['pca_2'], c=df['cluster'], cmap='viridis', alpha=0.3)
+                ax.scatter(company['pca_1'], company['pca_2'], color='red', s=100, label=ticker, edgecolor='black')
+                ax.set_title('Cluster View with PCA')
+                ax.set_xlabel('PCA 1')
+                ax.set_ylabel('PCA 2')
+                ax.legend()
+                st.pyplot(fig)
         else:
-            st.error("❌ No model defined for this GICS sector.")
+            st.error("❌ Ticker not found in sector-specific data.")
     else:
-        st.error("❌ Ticker not found in sector reference CSV.")
+        st.error("❌ No model defined for this GICS sector.")
 else:
-    st.info("ℹ️ Please enter a ticker symbol to begin.")
+    st.error("❌ Ticker not found in sector reference CSV.")
