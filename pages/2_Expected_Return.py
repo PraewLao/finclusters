@@ -85,38 +85,30 @@ try:
     # === Peer Range Calculation ===
     st.markdown("---")
     st.subheader("📊 Expected Return Range of Peers")
-    
-    try:
-        # Get sector and cluster of the selected stock
-        cluster_id = row.at[0, "cluster"] if "cluster" in row.columns and not pd.isna(row.at[0, "cluster"]) else None
-        sector_code = row.at[0, "sector"]
 
-    
-        if pd.isna(cluster_id):
-            st.info("This company is not assigned to a cluster. Peer expected return range cannot be calculated.")
+    try:
+        peer_returns = []
+
+        if "peer_tickers" not in st.session_state or not st.session_state["peer_tickers"]:
+            st.info("No peer tickers found from Page 1.")
         else:
-            # Filter peer group: same sector + cluster, not the selected stock, and cluster is not null
-            peers = coeff_df[
-                (coeff_df["sector"] == sector_code) &
-                (coeff_df["cluster"] == cluster_id) &
-                (coeff_df["ticker"].str.upper() != ticker.upper()) &
-                (coeff_df["cluster"].notna())
-            ]
-    
-            # Calculate expected return for each peer
-            peer_returns = []
-    
-            for _, peer in peers.iterrows():
-                model = peer["model"]
-                intercept_peer = peer["intercept"]
-    
+            for peer_ticker in st.session_state["peer_tickers"]:
+                peer_row = coeff_df[coeff_df["ticker"].str.upper() == peer_ticker]
+                if peer_row.empty:
+                    continue
+
+                peer_row = peer_row.iloc[0]
+                model = peer_row["model"]
+                intercept_peer = peer_row["intercept"]
+
+                # Get coefficients
                 coefs_peer = []
                 for i in range(1, 5):
                     col = f"coef_{i}"
-                    if col in peer and not pd.isna(peer[col]):
-                        coefs_peer.append(peer[col])
-    
-                # Set up factor vector x based on model type
+                    if col in peer_row and not pd.isna(peer_row[col]):
+                        coefs_peer.append(peer_row[col])
+
+                # Get factor vector
                 if model == "CAPM":
                     x_peer = [0.0442]
                 elif model == "FF3":
@@ -125,25 +117,19 @@ try:
                     x_peer = [0.01, 0.02, -0.01, 0.015]
                 else:
                     continue  # Skip unknown models
-    
-                # Only proceed if lengths match
+
                 if len(coefs_peer) == len(x_peer):
                     expected_return_peer = intercept_peer + np.dot(coefs_peer, x_peer) + rf
                     peer_returns.append(expected_return_peer)
-                else:
-                    continue  # Skip incomplete peers
-    
-            # Display results
+
             if peer_returns:
                 st.success(f"📉 Lowest Peer Return: **{min(peer_returns):.2%}**")
                 st.success(f"📈 Highest Peer Return: **{max(peer_returns):.2%}**")
             else:
-                st.info("No valid peers with complete model data were found in this cluster.")
+                st.info("No valid expected return could be calculated for peers.")
 
-    
     except Exception as e:
         st.error(f"Error calculating peer return range: {e}")
-
 
     # === Analyst Forecast Section ===
     st.markdown("---")
