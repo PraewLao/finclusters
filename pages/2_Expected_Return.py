@@ -1,42 +1,55 @@
 import streamlit as st
-import pickle
 import pandas as pd
 import requests
-import io
 
-# Load the expected return model
-@st.cache_resource
-def load_model():
-    url = "https://raw.githubusercontent.com/PraewLao/price-and-peers-app/main/expected_return_model.pkl"
-    response = requests.get(url)
-    model_bytes = io.BytesIO(response.content)
-    return pickle.load(model_bytes)
+# Load coefficients from GitHub
+@st.cache_data
+def load_coefficients():
+    url = "https://raw.githubusercontent.com/PraewLao/price-and-peers-app/main/data/expected_return_coefficients.csv"
+    return pd.read_csv(url)
 
+df = load_coefficients()
 
-data = load_model()
-models = data["models"]
-ticker_to_sector = data["ticker_to_sector"]
-
-# Streamlit UI
 st.title("📈 Expected Return Prediction")
 
-ticker = st.text_input("Enter a stock ticker (e.g., AAPL, TSLA)")
+# User input
+ticker = st.text_input("Enter a stock ticker (e.g., AAPL, JNJ)").upper()
+
+# Monthly average values from 2000–2024 training set
+default_factors = {
+    'MKT_RF': 0.0062,
+    'SMB': 0.0027,
+    'HML': 0.0024,
+    'MOM': 0.0037
+}
 
 if ticker:
-    ticker = ticker.upper()
-    sector = ticker_to_sector.get(ticker)
+    row = df[df['Ticker'] == ticker]
 
-    if sector is None:
-        st.error("Ticker not found in the training set.")
+    if row.empty:
+        st.error("Ticker not found.")
     else:
-        model_data = models.get(sector, {})
-        result = model_data.get(ticker)
+        gics = row.iloc[0]['GICS']
+        model = row.iloc[0]['Model']
+        alpha = row.iloc[0]['Alpha']
+        beta_mkt = row.iloc[0]['Beta_MKT_RF']
+        beta_smb = row.iloc[0].get('Beta_SMB', 0) or 0
+        beta_hml = row.iloc[0].get('Beta_HML', 0) or 0
+        beta_mom = row.iloc[0].get('Beta_MOM', 0) or 0
 
-        if result is None:
-            st.warning("No model available for this ticker.")
+        # Use forward-looking premium toggle for Healthcare (GICS 35 with CAPM)
+        if str(gics) == '35' and model == 'CAPM':
+            use_forward = st.toggle("Use forward-looking market premium (4.42%)?", value=False)
+            mkt_rf = 0.0442 if use_forward else default_factors['MKT_RF']
         else:
-            y_pred = result["y_pred"]
-            predicted_return = y_pred.mean()
+            mkt_rf = default_factors['MKT_RF']
 
-            st.markdown(f"### 🧠 Best Model for Sector {sector}")
-            st.success(f"Predicted Average Monthly Return: **{predicted_return:.2%}**")
+        # Calculate expected return
+        expected_return = alpha + beta_mkt * mkt_rf
+        if model in ['FF3', 'Carhart']:
+            expected_return += beta_smb * default_factors['SMB'] + beta_hml * default_factors['HML']
+        if model == 'Carhart':
+            expected_return += beta_mom * default_factors['MOM']
+
+        st.markdown(f"### 🧠 Model Used: {model}  |  GICS Sector: {gics}")
+        st.success(f"Predicted Monthly Return: **{expected_return:.2%}**")
