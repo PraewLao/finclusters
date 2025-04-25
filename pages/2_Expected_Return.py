@@ -5,7 +5,7 @@ import requests
 # Load coefficients from GitHub
 @st.cache_data
 def load_coefficients():
-    url = "https://raw.githubusercontent.com/PraewLao/price-and-peers-app/main/data/expected_return_coefficients.csv"
+    url = "https://raw.githubusercontent.com/PraewLao/price-and-peers-app/main/expected_return_coefficients.csv"
     return pd.read_csv(url)
 
 df = load_coefficients()
