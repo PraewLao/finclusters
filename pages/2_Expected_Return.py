@@ -2,7 +2,7 @@ import streamlit as st
 import pickle
 import pandas as pd
 import requests
-import os
+import io
 
 # Load the expected return model
 @st.cache_resource
