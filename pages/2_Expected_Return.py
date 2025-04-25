@@ -105,6 +105,7 @@ try:
     
             # Calculate expected return for each peer
             peer_returns = []
+    
             for _, peer in peers.iterrows():
                 model = peer["model"]
                 intercept_peer = peer["intercept"]
@@ -117,25 +118,28 @@ try:
     
                 # Set up factor vector x based on model type
                 if model == "CAPM":
-                    x_peer = [0.0442]  # or 0.01 if you want historical premium instead
+                    x_peer = [0.0442]
                 elif model == "FF3":
                     x_peer = [0.01, 0.02, -0.01]
                 elif model == "Carhart":
                     x_peer = [0.01, 0.02, -0.01, 0.015]
                 else:
-                    x_peer = []
+                    continue  # Skip unknown models
     
-                # Compute expected return if lengths match
-                if len(x_peer) == len(coefs_peer):
+                # Only proceed if lengths match
+                if len(coefs_peer) == len(x_peer):
                     expected_return_peer = intercept_peer + np.dot(coefs_peer, x_peer) + rf
                     peer_returns.append(expected_return_peer)
+                else:
+                    continue  # Skip incomplete peers
     
             # Display results
             if peer_returns:
                 st.success(f"📉 Lowest Peer Return: **{min(peer_returns):.2%}**")
                 st.success(f"📈 Highest Peer Return: **{max(peer_returns):.2%}**")
             else:
-                st.info("No valid peers with complete data were found in this cluster.")
+                st.info("No valid peers with complete model data were found in this cluster.")
+
     
     except Exception as e:
         st.error(f"Error calculating peer return range: {e}")
