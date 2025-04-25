@@ -45,9 +45,10 @@ try:
     st.markdown(f"**Sector:** `{sector_name}`")
 
     # Match ticker with model coefficients
-    row = coeff_df[coeff_df["ticker"].str.upper() == ticker.upper()]
+    row = coeff_df[coeff_df["ticker"].str.upper() == ticker.upper()].dropna(subset=["cluster"]).drop_duplicates(subset="ticker")
+
     if row.empty:
-        st.error("❌ Ticker not found in model data.")
+        st.error("❌ Ticker not found in model data or missing cluster.")
         st.stop()
 
     model_type = row["model"].values[0]
