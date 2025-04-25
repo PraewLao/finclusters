@@ -53,8 +53,8 @@ if ticker:
             if col in row.columns and not pd.isna(row[col].values[0]):
                 coefs.append(row[col].values[0])
 
-        # Detect sector for CAPM toggle
-        gics_sector = str(row["gics"].values[0]) if "gics" in row.columns else "Unknown"
+        # Convert GICS sector to int for matching
+        gics_sector = int(float(row["gics"].values[0])) if "gics" in row.columns else -1
 
         # Default factor values
         factor_inputs = {
@@ -63,8 +63,8 @@ if ticker:
             "Carhart": [0.01, 0.02, -0.01, 0.015]
         }
 
-        # Toggle for CAPM in Healthcare or IT sectors
-        if model_type == "CAPM" and gics_sector in ["35", "45"]:
+        # Toggle for CAPM in Healthcare (35) or IT (45)
+        if model_type == "CAPM" and gics_sector in [35, 45]:
             use_forward = st.toggle("Use forward-looking market premium (4.42%)?", value=False)
             factor_inputs["CAPM"] = [0.0442] if use_forward else [0.01]
 
