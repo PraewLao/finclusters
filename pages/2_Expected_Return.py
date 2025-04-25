@@ -88,8 +88,8 @@ try:
     st.success(f"🧠 Expected Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
 
     # === Find Peers from Same Cluster ===
-    # Filter peers from same cluster
-    peers = coef_df[(coef_df['sector'] == sector) & (coef_df['cluster'] == cluster_id)]
+    # Filter peers from same sector and cluster
+    peers = df[(df['sector'] == sector) & (df['cluster'] == cluster_id)]
     
     # Only keep peers that are still active
     peers = peers[peers['ticker'].isin(active_tickers)]
@@ -122,6 +122,7 @@ try:
         st.write(f"Highest Expected Return: **{max_peer_return:.2%}**")
     else:
         st.warning("⚠️ No active peers found to calculate expected return range.")
+
 
     # === Analyst Forecast Section ===
     st.markdown("---")
