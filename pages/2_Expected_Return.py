@@ -9,10 +9,9 @@ import os
 def load_model():
     url = "https://raw.githubusercontent.com/PraewLao/price-and-peers-app/main/expected_return_model.pkl"
     response = requests.get(url)
-    with open("expected_return_model.pkl", "wb") as f:
-        f.write(response.content)
-    with open("expected_return_model.pkl", "rb") as f:
-        return pickle.load(f)
+    model_bytes = io.BytesIO(response.content)
+    return pickle.load(model_bytes)
+
 
 data = load_model()
 models = data["models"]
