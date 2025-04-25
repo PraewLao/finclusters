@@ -45,15 +45,27 @@ try:
     st.markdown(f"**Sector:** `{sector_name}`")
 
     # Match ticker with model coefficients
-    row = coeff_df[coeff_df["ticker"].str.upper() == ticker.upper()].dropna(subset=["cluster"]).drop_duplicates(subset="ticker")
-
-    if row.empty:
-        st.error("❌ Ticker not found in model data or missing cluster.")
+    try:
+        row = (
+            coeff_df[coeff_df["ticker"].str.upper() == ticker.upper()]
+            .dropna(subset=["cluster"])
+            .drop_duplicates(subset="ticker")
+            .reset_index(drop=True)
+        )
+    
+        if row.empty or "cluster" not in row.columns:
+            raise ValueError("Ticker found but cluster data is missing.")
+    
+        cluster_id = row.at[0, "cluster"]
+        sector_code = row.at[0, "sector"]
+        model_type = row.at[0, "model"]
+        intercept = row.at[0, "intercept"]
+    
+        st.markdown(f"**Model used**: `{model_type}`")
+    
+    except Exception as e:
+        st.error(f"Error while loading model data: {e}")
         st.stop()
-
-    model_type = row["model"].values[0]
-    intercept = row["intercept"].values[0]
-    st.markdown(f"**Model used**: `{model_type}`")
 
     # Extract sector code and cluster id
     sector_code = row["sector"].values[0] if "sector" in row.columns else "Unknown"
