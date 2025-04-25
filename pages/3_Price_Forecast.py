@@ -56,11 +56,7 @@ try:
         
     if peer_price_min and peer_price_max:
         peer_range_text = f"${peer_price_min:.2f} - ${peer_price_max:.2f}"
-        
-        # DEBUG: Check how the dash is being rendered
-        st.text(f"DEBUG (peer_range_text): {peer_range_text}")
-        
-        st.markdown(f"📊 Peer-Based Price Range Estimate: **{peer_range_text}**")
+        st.markdown(f"📊 **Peer-Based Price Range Estimate:** {peer_range_text}")
 
     if analyst_price:
         st.markdown(f"📣 Analyst Price Estimate: **${analyst_price:.2f}**")
