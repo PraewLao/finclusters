@@ -11,7 +11,7 @@ if not ticker:
     st.warning("Please enter a stock ticker in the sidebar.")
     st.stop()
 
-st.title("📊 Financial Ratio Cluster Finder")
+st.title("📊 Peer Cluster Finder")
 
 # === Load Ticker & Sector Reference CSV ===
 TICKER_SECTOR_FILE = 'sector_model_coefficients_by_ticker_REPLACEMENT.csv'
@@ -68,15 +68,23 @@ if ticker in ticker_sector_df['ticker'].values:
 
             st.success(f"✅ {ticker} is in **Cluster {cluster_id}**")
 
-            # === Similar Companies ===
-            st.subheader("🏢 Similar Companies:")
-            peers = df[df['cluster'] == cluster_id][['tic', 'fyear']].sort_values(by='fyear', ascending=False).head(10)
-            peers_display = peers.drop(columns=['fyear'])
-            st.dataframe(peers_display)
+            # === Peer Companies ===
+            # Get most recent data per ticker
+            peers_recent = (
+            df[df['cluster'] == cluster_id]
+            .sort_values(by=['tic', 'fyear'], ascending=[True, False])
+            .drop_duplicates(subset='tic')  # Keep latest year per ticker
+            .sort_values(by='fyear', ascending=False)  # Sort peers by recency overall
+            .head(10)  # Show top 10 peers
+        )
 
-            # === Interactive PCA Visualization ===
+            # Show only tickers
+            st.subheader("🏢 Peer Companies (Most Recent Data):")
+            st.dataframe(peers_recent[['tic']])
+
+            # === Cluster Visualization ===
             if 'pca_1' in df.columns and 'pca_2' in df.columns:
-                st.subheader("🧭 Interactive PCA Cluster Visualization")
+                st.subheader("🧭 PCA Cluster Visualization")
 
                 # Add hover text combining ticker and fiscal year
                 df['hover_text'] = df['tic'] + " | Year: " + df['fyear'].astype(str)
@@ -87,7 +95,7 @@ if ticker in ticker_sector_df['ticker'].values:
                     hover_data={'fyear': False, 'pca_1': False, 'pca_2': False},
                     color_continuous_scale='Viridis',
                     opacity=0.6,
-                    title='PCA Cluster View (Interactive)'
+                    title='PCA Cluster View '
                 )
 
                 # Highlight selected company
