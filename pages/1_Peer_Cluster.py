@@ -3,6 +3,7 @@ import pandas as pd
 import joblib
 import plotly.express as px
 import yfinance as yf
+from concurrent.futures import ThreadPoolExecutor
 
 # Helper function to check if ticker is active
 def is_ticker_active(ticker_symbol):
@@ -14,7 +15,7 @@ def is_ticker_active(ticker_symbol):
             return True
         else:
             return False
-    except Exception as e:
+    except Exception:
         return False
 
 # === SIDEBAR (Live Global Ticker Input) ===
@@ -90,12 +91,13 @@ if ticker in ticker_sector_df['ticker'].values:
                 .drop_duplicates(subset='tic')  # Keep latest year per ticker
                 .sort_values(by='fyear', ascending=False)  # Sort peers by recency overall
             )
-
-            # Check if peer tickers are active
-            active_peers = []
-            for peer_ticker in peers_recent['tic']:
-                if is_ticker_active(peer_ticker):
-                    active_peers.append(peer_ticker)
+            
+            # Use ThreadPoolExecutor to check tickers in parallel
+            with ThreadPoolExecutor(max_workers=10) as executor:
+                results = list(executor.map(is_ticker_active, peers_recent['tic']))
+            
+            # Filter only active tickers
+            active_peers = [tic for tic, active in zip(peers_recent['tic'], results) if active]
             
             # Limit to top 10 active peers
             active_peers = active_peers[:10]
