@@ -46,17 +46,28 @@ if ticker:
         st.markdown(f"**Model used**: `{model_type}`")
 
         coefs = []
-        for i in range(1, 5):
-            col = f"coef_{i}"
-            if col in row.columns and not pd.isna(row[col].values[0]):
-                coefs.append(row[col].values[0])
+for i in range(1, 5):
+    col = f"coef_{i}"
+    if col in row.columns and not pd.isna(row[col].values[0]):
+        coefs.append(row[col].values[0])
 
-        factor_inputs = {
-            "CAPM": [0.01],
-            "FF3": [0.01, 0.02, -0.01],
-            "Carhart": [0.01, 0.02, -0.01, 0.015]
-        }
-        x = np.array(factor_inputs[model_type])
+# Identify GICS sector for toggle
+gics_sector = row["gics"].values[0] if "gics" in row.columns else "Unknown"
+
+# Default historical factors
+factor_inputs = {
+    "CAPM": [0.01],
+    "FF3": [0.01, 0.02, -0.01],
+    "Carhart": [0.01, 0.02, -0.01, 0.015]
+}
+
+# Toggle for forward-looking market premium (only if CAPM & GICS 35 or 45)
+if model_type == "CAPM" and str(gics_sector) in ["35", "45"]:
+    use_forward = st.toggle("Use forward-looking market premium (4.42%)?", value=False)
+    factor_inputs["CAPM"] = [0.0442] if use_forward else [0.01]
+
+x = np.array(factor_inputs[model_type])
+
 
         rf_percent = st.number_input("Enter Risk-Free Rate (%)", min_value=0.0, max_value=100.0, value=default_rf)
         rf = rf_percent / 100
