@@ -1,55 +1,85 @@
 import streamlit as st
+import yfinance as yf
 import pandas as pd
-import requests
+import numpy as np
 
-# Load coefficients from GitHub
+# Load model coefficients
 @st.cache_data
 def load_coefficients():
-    url = "https://raw.githubusercontent.com/PraewLao/price-and-peers-app/main/expected_return_coefficients.csv"
+    url = "https://raw.githubusercontent.com/PraewLao/price-and-peers-app/main/sector_model_coefficients_by_ticker_REPLACEMENT.csv"
     return pd.read_csv(url)
 
-df = load_coefficients()
+# Get default 10-year treasury yield
+@st.cache_data
+def get_default_rf():
+    try:
+        rf_yield = yf.Ticker("^TNX").info["regularMarketPrice"] / 100
+        return round(rf_yield * 100, 2)
+    except:
+        return 4.0
 
-st.title("📈 Expected Return Prediction")
+coeff_df = load_coefficients()
+default_rf = get_default_rf()
 
-# User input
-ticker = st.text_input("Enter a stock ticker (e.g., AAPL, JNJ)").upper()
+# === SIDEBAR ===
+st.sidebar.title("🔍 Stock Selection")
+ticker = st.sidebar.text_input("Enter stock ticker", value=st.session_state.get("ticker", "AAPL"))
+st.session_state["ticker"] = ticker
 
-# Monthly average values from 2000–2024 training set
-default_factors = {
-    'MKT_RF': 0.0062,
-    'SMB': 0.0027,
-    'HML': 0.0024,
-    'MOM': 0.0037
-}
-
+# === MAIN PAGE ===
 if ticker:
-    row = df[df['Ticker'] == ticker]
+    try:
+        stock_info = yf.Ticker(ticker).info
+        company_name = stock_info.get("longName", ticker.upper())
+        sector = stock_info.get("sector", "Unknown")
 
-    if row.empty:
-        st.error("Ticker not found.")
-    else:
-        gics = row.iloc[0]['GICS']
-        model = row.iloc[0]['Model']
-        alpha = row.iloc[0]['Alpha']
-        beta_mkt = row.iloc[0]['Beta_MKT_RF']
-        beta_smb = row.iloc[0].get('Beta_SMB', 0) or 0
-        beta_hml = row.iloc[0].get('Beta_HML', 0) or 0
-        beta_mom = row.iloc[0].get('Beta_MOM', 0) or 0
+        st.title(f"📈 Expected Return on {company_name} ({ticker.upper()})")
+        st.markdown(f"**Sector:** `{sector}`")
 
-        # Use forward-looking premium toggle for Healthcare (GICS 35 with CAPM)
-        if str(gics) == '35' and model == 'CAPM':
-            use_forward = st.toggle("Use forward-looking market premium (4.42%)?", value=False)
-            mkt_rf = 0.0442 if use_forward else default_factors['MKT_RF']
+        row = coeff_df[coeff_df["ticker"].str.upper() == ticker.upper()]
+        if row.empty:
+            st.error("❌ Ticker not found in model data.")
+            st.stop()
+
+        model_type = row["model"].values[0]
+        intercept = row["intercept"].values[0]
+        st.markdown(f"**Model used**: `{model_type}`")
+
+        coefs = []
+        for i in range(1, 5):
+            col = f"coef_{i}"
+            if col in row.columns and not pd.isna(row[col].values[0]):
+                coefs.append(row[col].values[0])
+
+        factor_inputs = {
+            "CAPM": [0.01],
+            "FF3": [0.01, 0.02, -0.01],
+            "Carhart": [0.01, 0.02, -0.01, 0.015]
+        }
+        x = np.array(factor_inputs[model_type])
+
+        rf_percent = st.number_input("Enter Risk-Free Rate (%)", min_value=0.0, max_value=100.0, value=default_rf)
+        rf = rf_percent / 100
+
+        monthly_return = intercept + np.dot(coefs, x) + rf
+
+        # ✅ Save to session state for Page 3
+        st.session_state["expected_return"] = monthly_return
+
+        st.success(f"🧠 Expected Return on {ticker.upper()}: **{round(monthly_return * 100, 2)}%**")
+
+        st.markdown("---")
+        st.subheader("📊 Expected Return Range of Peers")
+        st.info("Peer returns based on cluster analysis will be displayed here.")
+
+        st.markdown("---")
+        st.subheader("📣 Expected Return by Analyst Forecasts")
+        forward_pe = stock_info.get("forwardPE", None)
+        if forward_pe and forward_pe > 0:
+            analyst_return = (1 / forward_pe) + 0.03
+            st.success(f"📣 Analyst-Based Expected Return: **{round(analyst_return * 100, 2)}%**")
         else:
-            mkt_rf = default_factors['MKT_RF']
+            st.info("Forward P/E not available. Analyst return estimate could not be calculated.")
 
-        # Calculate expected return
-        expected_return = alpha + beta_mkt * mkt_rf
-        if model in ['FF3', 'Carhart']:
-            expected_return += beta_smb * default_factors['SMB'] + beta_hml * default_factors['HML']
-        if model == 'Carhart':
-            expected_return += beta_mom * default_factors['MOM']
-
-        st.markdown(f"### 🧠 Model Used: {model}  |  GICS Sector: {gics}")
-        st.success(f"Predicted Monthly Return: **{expected_return:.2%}**")
+    except Exception as e:
+        st.error(f"Error: {e}")
