@@ -79,8 +79,8 @@ if ticker in ticker_sector_df['ticker'].values:
                 df[df['cluster'] == cluster_id]
                 .sort_values(by=['tic', 'fyear'], ascending=[True, False])
                 .drop_duplicates(subset='tic')  # Keep latest year per ticker
-                .sort_values(by='fyear', ascending=False)  # Sort peers by recency overall
             )
+
             
             # Filter peers that are in active companies list
             active_peers = peers_recent[peers_recent['tic'].isin(active_tickers)]
@@ -96,6 +96,7 @@ if ticker in ticker_sector_df['ticker'].values:
                 st.dataframe(sorted_peers, use_container_width=True, hide_index=True)
             else:
                 st.warning("⚠️ No active peers found for this cluster.")
+
 
 
             # === Cluster Visualization ===
