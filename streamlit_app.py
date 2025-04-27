@@ -1,5 +1,10 @@
 import streamlit as st
 
+st.set_page_config(
+    page_title="Welcome to FinCluster",
+    page_icon="📊",
+    layout="wide"
+)
 # === TICKER INPUT (PERSISTENT ACROSS ALL PAGES) ===
 with st.sidebar:
     st.markdown("### 👉 Start here!")
