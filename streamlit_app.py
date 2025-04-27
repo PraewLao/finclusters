@@ -1,5 +1,12 @@
 import streamlit as st
 
+# Set page title and sidebar tab label
+st.set_page_config(
+    page_title="Welcome to FinCluster",
+    page_icon="📊",
+    layout="wide",
+    initial_sidebar_state="expanded"
+
 st.set_page_config(
     page_title="Welcome to FinCluster",
     page_icon="📊",
