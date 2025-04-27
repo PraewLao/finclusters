@@ -3,12 +3,12 @@ import pandas as pd
 import joblib
 import plotly.express as px
 
-# === SIDEBAR (Live Global Ticker Input) ===
+# === SIDEBAR ===
 ticker = st.sidebar.text_input("🔍 Enter stock ticker", value=st.session_state.get("ticker", "")).upper().strip()
 st.session_state["ticker"] = ticker
 
 if not ticker:
-    st.warning("Please enter a stock ticker in the sidebar.")
+    st.warning("⚠️ Please enter a stock ticker in the sidebar.")
     st.stop()
 
 st.title("📊 Peer Cluster Finder")
@@ -90,11 +90,14 @@ if ticker in ticker_sector_df['ticker'].values:
 
             
             # Show only active peer tickers
+            # Show only active peer tickers
             if not active_peers.empty:
                 st.subheader("🏢 Active Peer Companies")
-                st.dataframe(active_peers[['tic']].rename(columns={'tic': 'Ticker'}).reset_index(drop=True))
+                sorted_peers = active_peers[['tic']].rename(columns={'tic': 'Ticker'}).sort_values(by='Ticker').reset_index(drop=True)
+                st.dataframe(sorted_peers)
             else:
                 st.warning("⚠️ No active peers found for this cluster.")
+
 
             # === Cluster Visualization ===
             if 'pca_1' in df.columns and 'pca_2' in df.columns:
