@@ -1,11 +1,7 @@
-[theme]
-base="dark"
+import streamlit as st
 
-[server]
-headless = true
-
-[client]
-showSidebarNavigation = true
-
-[app]
-title = "Welcome to FinCluster"
+st.set_page_config(
+    page_title="Welcome to FinCluster",
+    page_icon="📊",
+    layout="wide"
+)
