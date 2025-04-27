@@ -93,7 +93,7 @@ if ticker in ticker_sector_df['ticker'].values:
             if not active_peers.empty:
                 st.subheader("🏢 Active Peer Companies")
                 sorted_peers = active_peers[['tic']].rename(columns={'tic': 'Ticker'}).sort_values(by='Ticker').reset_index(drop=True)
-                st.table(sorted_peers)
+                st.dataframe(sorted_peers, use_container_width=True, hide_index=True)
             else:
                 st.warning("⚠️ No active peers found for this cluster.")
 
