@@ -3,6 +3,12 @@ import streamlit as st
 st.set_page_config(
     page_title="Welcome to FinCluster",
     page_icon="📊",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+st.set_page_config(
+    page_title="Welcome to FinCluster",
+    page_icon="📊",
     layout="wide"
 )
 # === TICKER INPUT (PERSISTENT ACROSS ALL PAGES) ===
