@@ -7,6 +7,10 @@ App_page_0 = st.Page(
     title="Welcome to FinClusters!",
     default=True
 )
+App_page_0_1 = st.Page(
+    "pages/0.1_Methodology.py",
+    title="Methodology"
+)
 App_page_1 = st.Page(
     "pages/1_Peer_Cluster.py",
     title="Step 1: Cluster Analysis"
@@ -23,7 +27,7 @@ App_page_3 = st.Page(
 # **** Set up navigation with section headers ****
 pg = st.navigation(
     {
-        "Start Here:": [App_page_0],
+        "Start Here:": [App_page_0, App_page_0_1],
         "Explore Analysis:": [App_page_1, App_page_2, App_page_3],
     }
 )
