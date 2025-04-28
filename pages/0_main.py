@@ -8,11 +8,11 @@ Welcome to the **Financial Ratio Cluster Finder** and **Return Forecasting** pla
 
 ### 🎯 **Goals of This App**
 - Help investors and analysts **identify peer companies** using **financial ratio clustering**.
-- Provide **expected return forecasts** using:
-  - Traditional models like **CAPM**, **Fama-French 3-Factor**, and **Carhart 4-Factor**.
-  - **Peer-based return analysis** from financial clusters.
-  - **Analyst forecast data** from Yahoo Finance.
-- Visualize **price projections** based on different return assumptions.
+- Provide **expected return predictions** using:
+  - Models that offer the highest predictive accuracy for each industry (CAPM, Fama-French 3-Factor, and Carhart 4-Factor).
+  - Peer-based return analysis from financial cluster analysis.
+  - Analyst forecast data from Yahoo Finance.
+- **Forecast stock prices** based on different expected return assumptions.
 
 ---
 
@@ -29,8 +29,9 @@ Welcome to the **Financial Ratio Cluster Finder** and **Return Forecasting** pla
 
 **3. Price Forecasting**
    - Projects future stock prices based on:
-     - Expected returns.
-     - Recent stock performance.
+     - Model-based expected returns
+     - Peer-based range
+     - Analyst-based forecast
 
 ---
 
