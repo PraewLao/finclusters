@@ -1,79 +1,37 @@
+# The app structure is cloned from Professor Wysocki's Multipage Template
 import streamlit as st
 
-# Sidebar Layout
-with st.sidebar:
-    st.markdown("### Start Here:")
-    ticker = st.text_input("Click here to select stock", value=st.session_state.get("ticker", "")).upper().strip()
-    st.session_state["ticker"] = ticker
-
-    st.markdown("---")
-    st.markdown("### Dashboard Options:")
-
-
-# Only one set_page_config, placed right after import
-st.set_page_config(
-    page_title="Welcome to FinCluster",
-    page_icon="📊",
-    layout="wide",
-    initial_sidebar_state="expanded"
+# **** Page layout setup ****
+App_page_0 = st.Page(
+    "pages/main.py",
+    title="Click here to select stock",
+    default=True
+)
+App_page_1 = st.Page(
+    "pages/1_Peer_Cluster.py",
+    title="Step 1: Peers from cluster analysis"
+)
+App_page_2 = st.Page(
+    "pages/2_Expected_Return.py",
+    title="Step 2: Expected returns"
+)
+App_page_3 = st.Page(
+    "pages/3_Price_Forecast.py",
+    title="Step 3: Price forecast"
 )
 
-# === TICKER INPUT (PERSISTENT ACROSS ALL PAGES) ===
-with st.sidebar:
-    st.markdown("### 👉 Start here!")
-    ticker = st.text_input("Enter stock ticker", value=st.session_state.get("ticker", "")).upper().strip()
-    st.session_state["ticker"] = ticker
+# **** Set up navigation with section headers ****
+pg = st.navigation(
+    {
+        "Start Here:": [App_page_0],
+        "Dashboard Options": [App_page_1, App_page_2, App_page_3],
+    }
+)
 
-st.title("Welcome to FinCluster App")
 
-# Introduction Text
-st.markdown("""
-Welcome to the **Financial Ratio Cluster Finder** and **Return Forecasting** platform!
+# **** text/images shared on all pages ****
+st.sidebar.markdown("Sidebar Prompts:")
 
-### 🎯 **Goals of This App**
-- Help investors and analysts **identify peer companies** using **financial ratio clustering**.
-- Provide **expected return forecasts** using:
-  - Traditional models like **CAPM**, **Fama-French 3-Factor**, and **Carhart 4-Factor**.
-  - **Peer-based return analysis** from financial clusters.
-  - **Analyst forecast data** from Yahoo Finance.
-- Visualize **price projections** based on different return assumptions.
 
----
-
-### 🌟 **What This App Can Do:**
-1. **Industry-Specific Peer Clustering**
-   - Analyze a company's **financial position** relative to peers.
-   - Uses **pre-trained clustering models** per industry.
-   - Visualizes the company's **position in the financial space**.
-
-2. **Expected Return Forecasting**
-   - Provides **model-based returns** (CAPM, FF3, Carhart).
-   - Compares to **peer-based return ranges**.
-   - Integrates **analyst projections** from Yahoo Finance.
-
-3. **Price Forecasting**
-   - Projects future stock prices based on:
-     - Expected returns.
-     - Recent stock performance.
-
----
-
-### 🔍 **Current Industries Available:**
-This prototype supports the following **GICS Sectors**:
-- 🏥 **Healthcare** (GICS 35)
-- 🛍️ **Consumer Discretionary** (GICS 25)
-- 💻 **Information Technology** (GICS 45)
-
-> 🚧 **More sectors will be added soon!** We're expanding to provide support for all GICS industries.
-
----
-
-### 💡 **How to Use:**
-1. Enter a **ticker symbol** in the sidebar.
-2. The app detects the sector and applies the relevant **clustering model**.
-3. Explore peer clusters, return forecasts, and price projections.
-
----
-
-Feel free to explore and let us know your feedback!
-""")
+# **** Execute the navigation code ****
+pg.run()
