@@ -22,14 +22,10 @@ Welcome to the **Financial Ratio Cluster Finder** and **Return Forecasting** pla
    - Uses **pre-trained clustering models** per industry.
    - Visualizes the company's **position in the financial space**.
 
-<br>
-
 **2. Expected Return Forecasting**
    - Provides **model-based returns** (CAPM, FF3, Carhart).
    - Compares to **peer-based return ranges**.
    - Integrates **analyst projections** from Yahoo Finance.
-
-<br>
 
 **3. Price Forecasting**
    - Projects future stock prices based on:
