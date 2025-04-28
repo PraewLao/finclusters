@@ -70,9 +70,16 @@ try:
         forecast_df = pd.DataFrame(forecast_data, columns=["Estimate Type", "Price"])
         st.dataframe(forecast_df, use_container_width=True, hide_index=True)
 
-    # === Price Chart with Adjustable Timeframe ===
+    # === Price Chart ===
     st.markdown("---")
     st.subheader(f"📉 {ticker} Share Price")
+    
+    # Get current live price
+    current_price = stock_info.get("currentPrice", None)
+    
+    # Show current live price
+    if current_price:
+        st.markdown(f"💵 **Current Price:** ${current_price:.2f}")
     
     # Let user select time frame
     timeframe = st.radio(
