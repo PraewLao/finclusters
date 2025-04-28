@@ -1,6 +1,16 @@
 import streamlit as st
 
-# ✅ Only one set_page_config, placed right after import
+# Sidebar Layout
+with st.sidebar:
+    st.markdown("### Start Here:")
+    ticker = st.text_input("Click here to select stock", value=st.session_state.get("ticker", "")).upper().strip()
+    st.session_state["ticker"] = ticker
+
+    st.markdown("---")
+    st.markdown("### Dashboard Options:")
+
+
+# Only one set_page_config, placed right after import
 st.set_page_config(
     page_title="Welcome to FinCluster",
     page_icon="📊",
