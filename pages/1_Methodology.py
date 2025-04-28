@@ -36,12 +36,13 @@ Where:
 - \( R_i \) = Return of the individual stock
 - \( R_f \) = Risk-free rate
 - \( R_{MKT} \) = Return of the overall market
-- \( \\beta_{MKT} \) = Sensitivity of stock return to the market return
-- \( \\beta_{SMB} \) = Sensitivity to the size factor (Small minus Big)
-- \( \\beta_{HML} \) = Sensitivity to the value factor (High minus Low book-to-market)
-- \( \\beta_{MOM} \) = Sensitivity to the momentum factor
-- \( \\epsilon \) = Idiosyncratic risk (firm-specific return variation unexplained by the factors)
+- βₘₖₜ = Sensitivity of stock return to the market return
+- βₛₘᵦ = Sensitivity to the size factor (Small minus Big)
+- βₕₘₗ = Sensitivity to the value factor (High minus Low book-to-market)
+- βₘₒₘ = Sensitivity to the momentum factor
+- ε = Idiosyncratic risk (firm-specific return variation unexplained by the factors)
 """)
+
 
 st.markdown("""
 We evaluate model performance using RMSE and MAE, and select the best predictive model for each GICS sector:
