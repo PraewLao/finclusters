@@ -2,8 +2,6 @@ import streamlit as st
 
 st.title("📚 Methodology")
 
-st.markdown("""
-# Methodology
 
 ### Cluster Analysis
 The app applies cluster analysis to group companies based on their financial characteristics. Each cluster represents companies with similar financial risk profiles.
