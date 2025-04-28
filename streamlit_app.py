@@ -7,28 +7,28 @@ App_page_0 = st.Page(
     title="Welcome to FinClusters!",
     default=True
 )
-App_page_0_1 = st.Page(
-    "pages/0.1_Methodology.py",
+App_page_1 = st.Page(
+    "pages/1_Methodology.py",
     title="Methodology"
 )
-App_page_1 = st.Page(
-    "pages/1_Peer_Cluster.py",
+App_page_2 = st.Page(
+    "pages/2_Peer_Cluster.py",
     title="Step 1: Cluster Analysis"
 )
-App_page_2 = st.Page(
-    "pages/2_Expected_Return.py",
+App_page_3 = st.Page(
+    "pages/3_Expected_Return.py",
     title="Step 2: Expected Returns"
 )
-App_page_3 = st.Page(
-    "pages/3_Price_Forecast.py",
+App_page_4 = st.Page(
+    "pages/4_Price_Forecast.py",
     title="Step 3: Price Forecast"
 )
 
 # **** Set up navigation with section headers ****
 pg = st.navigation(
     {
-        "Start Here:": [App_page_0, App_page_0_1],
-        "Explore Analysis:": [App_page_1, App_page_2, App_page_3],
+        "Start Here:": [App_page_0, App_page_1],
+        "Explore Analysis:": [App_page_2, App_page_3, App_page_4],
     }
 )
 
