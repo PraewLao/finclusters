@@ -14,6 +14,7 @@ st.markdown("---")
 # --- Expected Return Prediction ---
 st.markdown("### Expected Return Prediction")
 st.markdown("#### Regression Model")
+
 st.markdown("""
 We train and test predictive models using historical stock return data from 2000 to 2024.  
 The models incorporate market, size, value, and momentum factors, evaluated using:
@@ -29,14 +30,38 @@ st.latex(r"R_i - R_f = \alpha + \beta_{MKT}(R_{MKT} - R_f) + \beta_{SMB}SMB + \b
 st.markdown("**Carhart 4-Factor:**")
 st.latex(r"R_i - R_f = \alpha + \beta_{MKT}(R_{MKT} - R_f) + \beta_{SMB}SMB + \beta_{HML}HML + \beta_{MOM}MOM + \epsilon")
 
+# --- Add Explanation of Variables ---
+st.markdown("""
+Where:
+- \( R_i \) = Return of the individual stock
+- \( R_f \) = Risk-free rate
+- \( R_{MKT} \) = Return of the overall market
+- \( \beta_{MKT} \) = Sensitivity of stock return to the market return
+- \( \beta_{SMB} \) = Sensitivity to the size factor (Small minus Big)
+- \( \beta_{HML} \) = Sensitivity to the value factor (High minus Low book-to-market)
+- \( \beta_{MOM} \) = Sensitivity to the momentum factor
+- \( \epsilon \) = Idiosyncratic risk (firm-specific return variation unexplained by the factors)
+""")
+
 st.markdown("""
 We evaluate model performance using RMSE and MAE, and select the best predictive model for each GICS sector:
 - CAPM for Healthcare
 - Fama-French 3-Factor for Consumer Discretionary
 - CAPM for Information Technology
 
-Users can toggle between using historical market returns or forward-looking risk premium estimates from [NYU Stern](https://pages.stern.nyu.edu/~adamodar/).
 """)
+
+st.markdown("""
+The app retrieves the default risk-free rate from Yahoo Finance in real-time, specifically using the 10-Year Treasury Yield, ticker symbol **`^TNX`**.  
+If live data is unavailable, a fallback default rate of **4.0%** is applied to ensure continuity.
+
+Users have the flexibility to manually adjust the risk-free rate if they believe an alternative assumption is more appropriate for their analysis.  
+Upon changing the input, the app dynamically recalculates expected returns across all predictive models to reflect the updated assumptions.
+
+Moreover, users can toggle between using **historical market excess returns** and **forward-looking risk premium estimates** sourced from [NYU Stern](https://pages.stern.nyu.edu/~adamodar/), providing additional flexibility in modeling expected returns.
+""")
+
+
 
 st.markdown("#### Peer Expected Return Range")
 st.markdown("""
