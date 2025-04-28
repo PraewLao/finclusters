@@ -1,18 +1,5 @@
 import streamlit as st
 
-st.set_page_config(
-    page_title="FinClusters App",
-    page_icon="📊",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
-
-# === TICKER INPUT (PERSISTENT ACROSS ALL PAGES) ===
-with st.sidebar:
-    st.markdown("### 👉 Start here!")
-    ticker = st.text_input("Enter stock ticker", value=st.session_state.get("ticker", "")).upper().strip()
-    st.session_state["ticker"] = ticker
-
 st.title("Welcome to FinCluster App")
 
 # Introduction Text
