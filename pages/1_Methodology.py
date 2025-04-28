@@ -53,7 +53,7 @@ The full model training and testing workflow was developed in a Colab notebook, 
 """)
 
 st.markdown("""
-The app retrieves the default risk-free rate from Yahoo Finance in real-time, specifically using the 10-Year Treasury Yield, ticker symbol **`^TNX`**.  
+To calculate and showcase the predicted expected return for a selected stock, the app selects the most precise model for each industry, retrieves the beta coefficients from the regression results, and pulls the default risk-free rate from Yahoo Finance in real-time, specifically using the 10-Year Treasury Yield, ticker symbol **`^TNX`**.  
 If live data is unavailable, a fallback default rate of **4.0%** is applied to ensure continuity.
 
 Users have the flexibility to manually adjust the risk-free rate if they believe an alternative assumption is more appropriate for their analysis.  
