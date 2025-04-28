@@ -35,11 +35,12 @@ try:
     company_name = stock_info.get("longName", ticker.upper())
     sector_name = stock_info.get("sector", "Unknown")
 
-    # === Adjust sector display names ===
-    sector_mapping = {
-        "Consumer Cyclical": "Consumer Discretionary",
-        "Technology": "Information Technology"
-    }
+    # Adjust sector display name 
+    if sector_name == "Consumer Cyclical":
+        sector_name = "Consumer Discretionary"
+    elif sector_name == "Technology":
+        sector_name = "Information Technology"
+
 
 sector_name = sector_mapping.get(sector_name, sector_name)
     st.title(f"📈 Expected Return on {company_name} ({ticker.upper()})")
