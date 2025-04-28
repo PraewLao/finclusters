@@ -4,7 +4,7 @@ import streamlit as st
 # **** Page layout setup ****
 App_page_0 = st.Page(
     "pages/0_main.py",
-    title="Click here to select stock",
+    title="Welcome to FinClusters",
     default=True
 )
 App_page_1 = st.Page(
@@ -24,13 +24,13 @@ App_page_3 = st.Page(
 pg = st.navigation(
     {
         "Start Here:": [App_page_0],
-        "Dashboard Options": [App_page_1, App_page_2, App_page_3],
+        "Explore Analysis": [App_page_1, App_page_2, App_page_3],
     }
 )
 
 # **** Sidebar Layout ****
 with st.sidebar:
-    st.markdown("### 👉 Start here!")
+    st.markdown("### 🎯 Select a Company")
     ticker = st.text_input("Enter stock ticker", value=st.session_state.get("ticker", "")).upper().strip()
     st.session_state["ticker"] = ticker
     
