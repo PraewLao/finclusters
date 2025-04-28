@@ -4,7 +4,7 @@ import streamlit as st
 # **** Page layout setup ****
 App_page_0 = st.Page(
     "pages/0_main.py",
-    title="Welcome to FinClusters",
+    title="Welcome to FinClusters!",
     default=True
 )
 App_page_1 = st.Page(
