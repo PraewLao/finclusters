@@ -1,11 +1,10 @@
 import streamlit as st
 
-# Only one set_page_config, placed right after import
 st.set_page_config(
-    page_title="Welcome to FinCluster",
+    page_title="FinClusters App",
     page_icon="📊",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
 )
 
 # === TICKER INPUT (PERSISTENT ACROSS ALL PAGES) ===
