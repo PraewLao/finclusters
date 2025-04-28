@@ -24,7 +24,7 @@ App_page_3 = st.Page(
 pg = st.navigation(
     {
         "Start Here:": [App_page_0],
-        "Explore Analysis": [App_page_1, App_page_2, App_page_3],
+        "Explore Analysis:": [App_page_1, App_page_2, App_page_3],
     }
 )
 
