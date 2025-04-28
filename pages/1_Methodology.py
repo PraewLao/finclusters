@@ -33,14 +33,17 @@ st.latex(r"R_i - R_f = \alpha + \beta_{MKT}(R_{MKT} - R_f) + \beta_{SMB}SMB + \b
 # --- Add Explanation of Variables ---
 st.markdown("""
 Where:
+# --- Add Explanation of Variables ---
+st.markdown("""
+Where:
 - \( R_i \) = Return of the individual stock
 - \( R_f \) = Risk-free rate
 - \( R_{MKT} \) = Return of the overall market
-- \( \beta_{MKT} \) = Sensitivity of stock return to the market return
-- \( \beta_{SMB} \) = Sensitivity to the size factor (Small minus Big)
-- \( \beta_{HML} \) = Sensitivity to the value factor (High minus Low book-to-market)
-- \( \beta_{MOM} \) = Sensitivity to the momentum factor
-- \( \epsilon \) = Idiosyncratic risk (firm-specific return variation unexplained by the factors)
+- \( \\beta_{MKT} \) = Sensitivity of stock return to the market return
+- \( \\beta_{SMB} \) = Sensitivity to the size factor (Small minus Big)
+- \( \\beta_{HML} \) = Sensitivity to the value factor (High minus Low book-to-market)
+- \( \\beta_{MOM} \) = Sensitivity to the momentum factor
+- \( \\epsilon \) = Idiosyncratic risk (firm-specific return variation unexplained by the factors)
 """)
 
 st.markdown("""
