@@ -3,15 +3,13 @@ import pandas as pd
 import joblib
 import plotly.express as px
 
-# === SIDEBAR ===
-ticker = st.sidebar.text_input("🔍 Enter stock ticker", value=st.session_state.get("ticker", "")).upper().strip()
-st.session_state["ticker"] = ticker
+st.title("📊 Peer Cluster Finder")
+
+ticker = st.session_state.get("ticker", "")
 
 if not ticker:
     st.warning("⚠️ Please enter a stock ticker in the sidebar.")
     st.stop()
-
-st.title("📊 Peer Cluster Finder")
 
 # === Load Ticker & Sector Reference CSV ===
 TICKER_SECTOR_FILE = 'sector_model_coefficients_by_ticker_REPLACEMENT.csv'
