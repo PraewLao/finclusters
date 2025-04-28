@@ -37,13 +37,13 @@ We evaluate model performance using RMSE and MAE, and select the best predictive
 Users can toggle between using historical market returns or forward-looking risk premium estimates from [NYU Stern](https://pages.stern.nyu.edu/~adamodar/).
 """)
 
-st.markdown("---")
+
 st.markdown("### Peer Expected Return Range")
 st.markdown("""
 The app calculates minimum and maximum expected returns among a company's peers using the sector's best-fit model.
 """)
 
-st.markdown("---")
+
 st.markdown("### Analyst Estimation of Expected Return")
 st.markdown("""
 Using real-time forward P/E data from Yahoo Finance and assuming a 3% GDP growth rate, implied expected returns are computed using:
@@ -64,3 +64,5 @@ st.latex(r"r = \frac{1}{P/E} + g")
 st.markdown("""
 Thus, given the forward P/E and assuming a growth rate of 3%, we estimate the implied analyst expected return for the stock.
 """)
+
+st.markdown("---")
