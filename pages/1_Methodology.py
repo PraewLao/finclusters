@@ -58,7 +58,7 @@ To calculate and showcase the predicted expected return for a selected stock, th
 Users have the flexibility to manually adjust the risk-free rate if they believe an alternative assumption is more appropriate for their analysis.  
 Upon changing the input, the app dynamically recalculates expected returns across all predictive models to reflect the updated assumptions.
 
-Moreover, users can toggle between using **historical market excess returns** and **forward-looking risk premium estimates** sourced from [NYU Stern](https://pages.stern.nyu.edu/~adamodar/), providing additional flexibility in modeling expected returns.
+Moreover, users can toggle between using historical market excess returns and forward-looking risk premium estimates sourced from [NYU Stern](https://pages.stern.nyu.edu/~adamodar/), providing additional flexibility in modeling expected returns.
 """)
 
 # --- Peer Estimation of Expected Return ---
