@@ -11,7 +11,7 @@ Each cluster represents companies with similar financial risk profiles.
 
 st.markdown("---")
 
-# --- Expected Return Prediction ---
+# --- Model-Based Expected Return Prediction ---
 st.markdown("### Expected Return Prediction")
 st.markdown("#### Regression Model")
 
@@ -61,32 +61,39 @@ Upon changing the input, the app dynamically recalculates expected returns acros
 Moreover, users can toggle between using **historical market excess returns** and **forward-looking risk premium estimates** sourced from [NYU Stern](https://pages.stern.nyu.edu/~adamodar/), providing additional flexibility in modeling expected returns.
 """)
 
-
-
+# --- Peer Estimation of Expected Return ---
 st.markdown("#### Peer Expected Return Range")
 st.markdown("""
 The app calculates minimum and maximum expected returns among a company's peers using the sector's best-fit model.
 """)
 
+# --- Analyst Estimation of Expected Return ---
 st.markdown("#### Analyst Estimation of Expected Return")
+
 st.markdown("""
 Using real-time forward P/E data from Yahoo Finance and assuming a 3% GDP growth rate, implied expected returns are computed using:
 """)
+
+# P/E Equation
 st.latex(r"P/E = \frac{1}{r-g}")
 
-st.markdown("""
-Where:
-- \( P/E \) = Forward Price-to-Earnings ratio from Yahoo Finance
-- \( r \) = Implied expected return
-- \( g \) = Assumed growth rate (set at 3%, proxied by long-term GDP growth)
+# Where: section (LaTeX style line-by-line)
+st.markdown("Where:")
+st.latex(r"P/E \quad \text{= Forward Price-to-Earnings ratio from Yahoo Finance}")
+st.latex(r"r \quad \text{= Implied expected return}")
+st.latex(r"g \quad \text{= Assumed growth rate (set at 3%, proxied by long-term GDP growth)}")
 
+st.markdown("""
 Rearranging the equation to solve for \( r \):
 """)
+
+# Rearranged Equation
 st.latex(r"r = \frac{1}{P/E} + g")
 
 st.markdown("""
 Thus, given the forward P/E and assuming a growth rate of 3%, we estimate the implied analyst expected return for the stock.
 """)
+
 
 st.markdown("---")
 
