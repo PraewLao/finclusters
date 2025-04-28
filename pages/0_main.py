@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title("Welcome to FinCluster App")
+st.title("Welcome to FinClusters App")
 
 # Introduction Text
 st.markdown("""
