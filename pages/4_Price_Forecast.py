@@ -35,7 +35,7 @@ try:
     if forward_pe and forward_eps:
         analyst_price = forward_pe * forward_eps
 
-    # Peer forecast (real one)
+    # Peer forecast
     peer_min_return = st.session_state.get("peer_min_return", None)
     peer_max_return = st.session_state.get("peer_max_return", None)
 
