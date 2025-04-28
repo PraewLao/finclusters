@@ -49,6 +49,7 @@ We evaluate model performance using RMSE and MAE, and select the best predictive
 - Fama-French 3-Factor for Consumer Discretionary
 - CAPM for Information Technology
 
+The full model training and testing workflow was developed in a Colab notebook, which can be accessed [here](https://drive.google.com/drive/folders/1phTcLUvwUc_gxbt229_L2Eqaoti3g4Qj?usp=sharing).
 """)
 
 st.markdown("""
