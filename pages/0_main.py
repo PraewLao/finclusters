@@ -6,7 +6,7 @@ st.title("Welcome to FinClusters App")
 st.markdown("""
 Welcome to the **Financial Ratio Cluster Finder** and **Return Forecasting** platform!
 
-### 🎯 **Goals of This App**
+### 🎯 **Goals of FinClusters**
 - Help investors and analysts **identify peer companies** using **financial ratio clustering**.
 - Provide **expected return predictions** using:
   - Models that offer the highest predictive accuracy for each industry (CAPM, Fama-French 3-Factor, and Carhart 4-Factor).
@@ -16,7 +16,7 @@ Welcome to the **Financial Ratio Cluster Finder** and **Return Forecasting** pla
 
 ---
 
-### 🌟 **What This App Can Do**
+### 🌟 **What FinClusters Can Do**
 **1. Industry-Specific Peer Clustering**
    - Analyze a company's financial position relative to peers.
    - Uses pre-trained clustering models per industry.
@@ -45,7 +45,7 @@ This prototype supports the following **GICS Sectors**:
 
 ---
 
-### 💡 **How to Use**
+### 💡 **How to Use FinClusters**
 1. Enter a **ticker symbol** in the sidebar.
 2. The app detects the sector and applies the relevant **clustering model**.
 3. Explore peer clusters, return forecasts, and price projections.
