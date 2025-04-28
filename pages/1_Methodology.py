@@ -66,7 +66,7 @@ Thus, given the forward P/E and assuming a growth rate of 3%, we estimate the im
 st.markdown("---")
 
 # --- Price Forecast Methodology ---
-st.markdown("### Price Forecast Methodology")
+st.markdown("### Price Forecast")
 st.markdown("""
 The app projects potential future stock prices based on three forecasting methods.  
 Each method leverages the expected returns estimated earlier and combines them with forward-looking earnings data retrieved from Yahoo Finance.  
