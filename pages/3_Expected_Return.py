@@ -42,7 +42,6 @@ try:
         sector_name = "Information Technology"
 
 
-sector_name = sector_mapping.get(sector_name, sector_name)
     st.title(f"📈 Expected Return on {company_name} ({ticker.upper()})")
     st.markdown(f"**Sector:** `{sector_name}`")
 
