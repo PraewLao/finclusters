@@ -101,10 +101,10 @@ if ticker in ticker_sector_df['ticker'].values:
             # === Cluster Visualization ===
             if 'pca_1' in df.columns and 'pca_2' in df.columns:
                 st.subheader("🧭 PCA Cluster Visualization")
-
+            
                 # Add hover text combining ticker and fiscal year
                 df['hover_text'] = df['tic'] + " | Year: " + df['fyear'].astype(str)
-
+            
                 fig = px.scatter(
                     df, x='pca_1', y='pca_2', color='cluster',
                     hover_name='hover_text',
@@ -113,17 +113,17 @@ if ticker in ticker_sector_df['ticker'].values:
                     opacity=0.6,
                     title='PCA Cluster View '
                 )
-
+            
                 # Highlight selected company
                 fig.add_scatter(
                     x=[company['pca_1']], y=[company['pca_2']],
                     mode='markers+text',
-                    marker=dict(color='red', size=12, line=dict(color='black', width=1)),
+                    marker=dict(color='red', size=14, line=dict(color='black', width=2)),
                     text=[ticker],
                     textposition='top center',
                     name='Selected Company'
                 )
-
+            
                 fig.update_layout(height=600, width=900)
                 st.plotly_chart(fig, use_container_width=True)
         else:
