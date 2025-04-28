@@ -1,4 +1,2 @@
-import streamlit as st
-
-# Redirect user to the Welcome_to_FinCluster page
-st.switch_page("pages/Welcome_to_FinCluster.py")
+from streamlit_extras.switch_page_button import switch_page
+switch_page("Welcome_to_FinCluster")
