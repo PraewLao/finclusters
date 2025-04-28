@@ -76,12 +76,13 @@ try:
     st.subheader(f"📉 {ticker} Share Price")
     
     # Let user select time frame
-    timeframe = st.selectbox(
+    timeframe = st.radio(
         "Select Time Frame",
         options=["1M", "3M", "6M", "1Y", "2Y", "5Y", "Max"],
-        index=3
+        index=3,
+        horizontal=True
     )
-    
+        
     # Map selection to yfinance period
     def map_timeframe(duration):
         mapping = {
