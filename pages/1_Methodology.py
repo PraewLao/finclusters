@@ -127,6 +127,22 @@ st.markdown("---")
 
 # --- Model-Based Expected Return Prediction ---
 st.markdown("### Expected Return Prediction")
+
+# --- Data Used to Train the Model ---
+st.markdown("#### Data Used to Train the Model")
+
+st.markdown("""
+We use historical stock return and factor data covering **January 2000 to December 2024**.  
+- **Stock returns** were gathered from CRSP.  
+- **Fama-French 3 factors** and the **momentum factor** were sourced from WRDS, representing market, size, value, and momentum factors.
+
+The dataset is split into training and testing sets based on a fixed date:
+- **Training set**: January 2000 – December 2018 (~76% of the data)
+- **Testing set**: January 2019 – December 2024 (~24% of the data)
+
+This split ensures that the model is trained on historical periods and evaluated on more recent, unseen data.
+""")
+
 st.markdown("#### Regression Model")
 
 st.markdown("""
