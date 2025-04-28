@@ -3,6 +3,13 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 
+# === Get ticker from global session state ===
+ticker = st.session_state.get("ticker", "")
+
+if not ticker:
+    st.warning("⚠️ Please enter a stock ticker in the sidebar.")
+    st.stop()
+
 # Load model coefficients from CSV
 @st.cache_data
 def load_coefficients():
@@ -21,14 +28,6 @@ def get_default_rf():
 # Load model data and treasury yield
 coeff_df = load_coefficients()
 default_rf = get_default_rf()
-
-# === SIDEBAR (Live Global Ticker Input) ===
-ticker = st.sidebar.text_input("🔍 Enter stock ticker", value=st.session_state.get("ticker", "")).upper().strip()
-st.session_state["ticker"] = ticker
-
-if not ticker:
-    st.warning("Please enter a stock ticker in the sidebar.")
-    st.stop()
 
 # === MAIN PAGE ===
 try:
