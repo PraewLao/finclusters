@@ -69,31 +69,24 @@ The app calculates minimum and maximum expected returns among a company's peers 
 
 # --- Analyst Estimation of Expected Return ---
 st.markdown("#### Analyst Estimation of Expected Return")
-
 st.markdown("""
 Using real-time forward P/E data from Yahoo Finance and assuming a 3% GDP growth rate, implied expected returns are computed using:
 """)
-
-# P/E Equation
 st.latex(r"P/E = \frac{1}{r-g}")
 
-# Where: section (LaTeX style line-by-line)
-st.markdown("Where:")
-st.latex(r"P/E \quad \text{= Forward Price-to-Earnings ratio from Yahoo Finance}")
-st.latex(r"r \quad \text{= Implied expected return}")
-st.latex(r"g \quad \text{= Assumed growth rate (set at 3%, proxied by long-term GDP growth)}")
-
 st.markdown("""
+Where:
+- \( P/E \) = Forward Price-to-Earnings ratio from Yahoo Finance
+- \( r \) = Implied expected return
+- \( g \) = Assumed growth rate (set at 3%, proxied by long-term GDP growth)
+
 Rearranging the equation to solve for \( r \):
 """)
-
-# Rearranged Equation
 st.latex(r"r = \frac{1}{P/E} + g")
 
 st.markdown("""
 Thus, given the forward P/E and assuming a growth rate of 3%, we estimate the implied analyst expected return for the stock.
 """)
-
 
 st.markdown("---")
 
