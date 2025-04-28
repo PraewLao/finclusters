@@ -18,14 +18,14 @@ Welcome to the **Financial Ratio Cluster Finder** and **Return Forecasting** pla
 
 ### 🌟 **What This App Can Do:**
 **1. Industry-Specific Peer Clustering**
-   - Analyze a company's **financial position** relative to peers.
-   - Uses **pre-trained clustering models** per industry.
+   - Analyze a company's financial position relative to peers.
+   - Uses pre-trained clustering models per industry.
    - Visualizes the company's **position in the financial space**.
 
 **2. Expected Return Forecasting**
-   - Provides **model-based returns** (CAPM, FF3, Carhart).
-   - Compares to **peer-based return ranges**.
-   - Integrates **analyst projections** from Yahoo Finance.
+   - Provides model-based returns (CAPM, FF3, Carhart).
+   - Compares to peer-based return ranges.
+   - Integrates analyst projections from Yahoo Finance.
 
 **3. Price Forecasting**
    - Projects future stock prices based on:
