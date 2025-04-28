@@ -73,7 +73,7 @@ try:
 
     # === Price Chart with Adjustable Timeframe ===
     st.markdown("---")
-    st.subheader(f"📉 {ticker} Share Price Chart")
+    st.subheader(f"📉 {ticker} Share Price")
     
     # Let user select time frame
     timeframe = st.selectbox(
