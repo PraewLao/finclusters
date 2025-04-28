@@ -30,19 +30,18 @@ st.latex(r"R_i - R_f = \alpha + \beta_{MKT}(R_{MKT} - R_f) + \beta_{SMB}SMB + \b
 st.markdown("**Carhart 4-Factor:**")
 st.latex(r"R_i - R_f = \alpha + \beta_{MKT}(R_{MKT} - R_f) + \beta_{SMB}SMB + \beta_{HML}HML + \beta_{MOM}MOM + \epsilon")
 
-# --- Add Explanation of Variables ---
+# Explanation of Variables
 st.markdown("""
 Where:
-- \( R_i \) = Return of the individual stock
-- \( R_f \) = Risk-free rate
-- \( R_{MKT} \) = Return of the overall market
-- βₘₖₜ = Sensitivity of stock return to the market return
-- βₛₘᵦ = Sensitivity to the size factor (Small minus Big)
-- βₕₘₗ = Sensitivity to the value factor (High minus Low book-to-market)
-- βₘₒₘ = Sensitivity to the momentum factor
+- Ri = Return of the individual stock
+- Rf = Risk-free rate
+- RMKT = Return of the overall market
+- βMKT = Sensitivity of stock return to the market return
+- βSMB = Sensitivity to the size factor (Small minus Big)
+- βHML = Sensitivity to the value factor (High minus Low book-to-market)
+- βMOM = Sensitivity to the momentum factor
 - ε = Idiosyncratic risk (firm-specific return variation unexplained by the factors)
 """)
-
 
 st.markdown("""
 We evaluate model performance using RMSE and MAE, and select the best predictive model for each GICS sector:
