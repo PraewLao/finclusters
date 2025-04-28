@@ -16,7 +16,7 @@ Welcome to the **Financial Ratio Cluster Finder** and **Return Forecasting** pla
 
 ---
 
-### 🌟 **What This App Can Do:**
+### 🌟 **What This App Can Do**
 **1. Industry-Specific Peer Clustering**
    - Analyze a company's financial position relative to peers.
    - Uses pre-trained clustering models per industry.
@@ -35,7 +35,7 @@ Welcome to the **Financial Ratio Cluster Finder** and **Return Forecasting** pla
 
 ---
 
-### 🔍 **Current Industries Available:**
+### 🔍 **Current Industries Available**
 This prototype supports the following **GICS Sectors**:
 - 🏥 **Healthcare** (GICS 35)
 - 🛍️ **Consumer Discretionary** (GICS 25)
@@ -45,7 +45,7 @@ This prototype supports the following **GICS Sectors**:
 
 ---
 
-### 💡 **How to Use:**
+### 💡 **How to Use**
 1. Enter a **ticker symbol** in the sidebar.
 2. The app detects the sector and applies the relevant **clustering model**.
 3. Explore peer clusters, return forecasts, and price projections.
