@@ -33,9 +33,6 @@ st.latex(r"R_i - R_f = \alpha + \beta_{MKT}(R_{MKT} - R_f) + \beta_{SMB}SMB + \b
 # --- Add Explanation of Variables ---
 st.markdown("""
 Where:
-# --- Add Explanation of Variables ---
-st.markdown("""
-Where:
 - \( R_i \) = Return of the individual stock
 - \( R_f \) = Risk-free rate
 - \( R_{MKT} \) = Return of the overall market
