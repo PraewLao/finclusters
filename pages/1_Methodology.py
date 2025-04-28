@@ -5,7 +5,7 @@ st.title("📚 Methodology")
 # --- Cluster Analysis ---
 st.markdown("### Cluster Analysis")
 st.markdown("""
-[Placehodler] The app applies cluster analysis to group companies based on their financial characteristics.  
+[Placeholder] The app applies cluster analysis to group companies based on their financial characteristics.  
 Each cluster represents companies with similar financial risk profiles.
 """)
 
