@@ -2,11 +2,125 @@ import streamlit as st
 
 st.title("📚 Methodology")  
 
-# --- Cluster Analysis ---
-st.markdown("### Cluster Analysis")
+# --- Clustering Methodology ---
+st.markdown("### Financial Ratio Clustering")
+st.markdown("#### Overview")
+
 st.markdown("""
-[Placeholder] The app applies cluster analysis to group companies based on their financial characteristics.  
-Each cluster represents companies with similar financial risk profiles.
+We use **K-Means Clustering** to group companies based on similar **financial profiles**.  
+The clustering models are **industry-specific**, with separate models trained for:
+- Healthcare (GICS 35)
+- Consumer Discretionary (GICS 25)
+- Information Technology (GICS 45)
+
+The goal is to identify companies with **comparable financial fundamentals** to aid in peer analysis, investment screening, and forecasting.
+""")
+
+# --- Financial Ratios Used ---
+st.markdown("#### Financial Ratios Used")
+
+st.markdown("""
+**Healthcare (GICS 35):**
+- ROA (Return on Assets)
+- ROE (Return on Equity)
+- ROA Volatility (3-Year Rolling Std Dev)
+- ROE Volatility (3-Year Rolling Std Dev)
+- R&D Expense / Sales
+- Debt / Assets
+- Market / Book Value
+- Working Capital / Total Assets
+- Retained Earnings / Total Assets
+
+**Consumer Discretionary (GICS 25):**
+- ROA (Return on Assets)
+- ROE (Return on Equity)
+- R&D Expense / Sales
+- Debt / Assets
+- Market / Book Value
+- Working Capital / Total Assets
+- Retained Earnings / Total Assets
+- ROA Volatility
+- ROE Volatility
+
+**Information Technology (GICS 45):**
+- ROA (Return on Assets)
+- ROE (Return on Equity)
+- ROA Volatility
+- ROE Volatility
+- R&D Expense / Sales
+- SG&A Expense / Sales
+- CapEx / Sales
+- Debt / Assets
+- Market / Book Value
+- Working Capital / Total Assets
+""")
+
+# --- Equations ---
+st.markdown("#### Key Financial Ratio Formulas")
+
+st.latex(r"\text{ROA} = \frac{\text{Net Income}}{\text{Total Assets}}")
+st.latex(r"\text{ROE} = \frac{\text{Net Income}}{\text{Common Equity}}")
+st.latex(r"\text{Debt/Assets} = \frac{\text{Total Liabilities}}{\text{Total Assets}}")
+st.latex(r"\text{Market/Book} = \frac{\text{Market Cap}}{\text{Common Equity}}")
+st.latex(r"\text{R&D/Sales} = \frac{\text{R\&D Expenses}}{\text{Sales}}")
+st.latex(r"\text{SGA/Sales} = \frac{\text{SG\&A Expenses}}{\text{Sales}}")
+st.latex(r"\text{CapEx/Sales} = \frac{\text{Capital Expenditures}}{\text{Sales}}")
+st.latex(r"\text{Working Capital/Assets} = \frac{\text{Working Capital}}{\text{Total Assets}}")
+st.latex(r"\text{Retained Earnings/Assets} = \frac{\text{Retained Earnings}}{\text{Total Assets}}")
+
+st.markdown("""
+Volatilities (ROA Volatility and ROE Volatility) are calculated as **3-year rolling standard deviations** of ROA and ROE, respectively.
+""")
+
+# --- Preprocessing ---
+st.markdown("#### Data Preparation")
+
+st.markdown("""
+- Source: WRDS Compustat (Annual Fundamentals)
+- Active companies between 2000 to 2023.
+- Sectors filtered by GICS codes (25, 35, 45).
+- Winsorization applied at 1st and 99th percentiles to reduce the impact of outliers.
+- Financial ratios normalized using **StandardScaler** prior to clustering.
+""")
+
+# --- Clustering Algorithm ---
+st.markdown("#### K-Means Clustering")
+
+st.markdown("""
+The **K-Means Algorithm** partitions companies into **k clusters** by minimizing the sum of squared distances between points and their assigned cluster centroids.
+
+We determined the optimal number of clusters **(k)** per sector using the **Elbow Method**, which analyzes where additional clusters provide diminishing improvements in inertia (sum of squared distances).
+
+Typical values:
+- Healthcare: 6 clusters
+- Consumer Discretionary: 7 clusters
+- Information Technology: 5 clusters
+""")
+
+st.latex(r"\text{Inertia} = \sum_{i=1}^{n} || x_i - \mu_{c(i)} ||^2")
+
+st.markdown("""
+Where:
+- \( x_i \) = Data point
+- \( \mu_{c(i)} \) = Centroid of the assigned cluster
+""")
+
+# --- PCA for Visualization ---
+st.markdown("#### PCA (Principal Component Analysis) for 2D Visualization")
+
+st.markdown("""
+After clustering, we reduce the dimensionality of the financial ratio space to **2 Principal Components** for visualization using **PCA**.
+""")
+
+st.latex(r"Z = XW")
+
+st.markdown("""
+Where:
+- \( X \) = Original standardized features
+- \( W \) = PCA loading matrix
+- \( Z \) = Projected 2D representation
+
+The scatter plot shows companies colored by their cluster label, and highlights the selected company's position among peers.
 """)
 
 st.markdown("---")
