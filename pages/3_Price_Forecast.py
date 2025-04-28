@@ -71,14 +71,38 @@ try:
         forecast_df = pd.DataFrame(forecast_data, columns=["Estimate Type", "Price"])
         st.dataframe(forecast_df, use_container_width=True, hide_index=True)
 
-    # === 1-Year Chart ===
-    hist = stock.history(period="1y")
+    # === Price Chart with Adjustable Timeframe ===
+    st.markdown("---")
+    st.subheader(f"📉 {ticker} Share Price Chart")
+    
+    # Let user select time frame
+    timeframe = st.selectbox(
+        "Select Time Frame",
+        options=["1M", "3M", "6M", "1Y", "2Y", "5Y", "Max"],
+        index=3
+    )
+    
+    # Map selection to yfinance period
+    def map_timeframe(duration):
+        mapping = {
+            "1M": "1mo",
+            "3M": "3mo",
+            "6M": "6mo",
+            "1Y": "1y",
+            "2Y": "2y",
+            "5Y": "5y",
+            "Max": "max"
+        }
+        return mapping.get(duration, "1y")
+    
+    period = map_timeframe(timeframe)
+    hist = stock.history(period=period)
+    
     if not hist.empty:
-        st.markdown("---")
-        st.subheader("📉 One-Year Share Price")
         st.line_chart(hist["Close"], use_container_width=True)
     else:
-        st.info("1Y price data not available.")
+        st.info(f"{timeframe} price data not available.")
+
 
 except Exception as e:
     st.error(f"⚠️ Error fetching data: {e}")
