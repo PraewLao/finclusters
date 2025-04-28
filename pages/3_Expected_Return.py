@@ -34,13 +34,14 @@ try:
     stock_info = yf.Ticker(ticker).info
     company_name = stock_info.get("longName", ticker.upper())
     sector_name = stock_info.get("sector", "Unknown")
-    sector_name = stock_info.get("sector", "Unknown")
 
-    # Adjust sector display name for GICS 25
-    if sector_name == "Consumer Cyclical":
-        sector_name = "Consumer Discretionary"
+    # === Adjust sector display names ===
+    sector_mapping = {
+        "Consumer Cyclical": "Consumer Discretionary",
+        "Technology": "Information Technology"
+    }
 
-
+sector_name = sector_mapping.get(sector_name, sector_name)
     st.title(f"📈 Expected Return on {company_name} ({ticker.upper()})")
     st.markdown(f"**Sector:** `{sector_name}`")
 
