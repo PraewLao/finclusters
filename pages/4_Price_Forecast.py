@@ -72,7 +72,7 @@ try:
 
     # === Price Chart ===
     st.markdown("---")
-    st.subheader(f"📉 {ticker} Share Price")
+    st.subheader(f"🔔 {ticker} Share Price")
     
     # Get current live price
     current_price = stock_info.get("currentPrice", None)
