@@ -5,6 +5,7 @@ import plotly.express as px
 
 st.title("📊 Peer Cluster Finder")
 
+# === Get ticker from global session state ===
 ticker = st.session_state.get("ticker", "")
 
 if not ticker:
