@@ -3,7 +3,7 @@ import streamlit as st
 
 # **** Page layout setup ****
 App_page_0 = st.Page(
-    "pages/main.py",
+    "pages/0_main.py",
     title="Click here to select stock",
     default=True
 )
