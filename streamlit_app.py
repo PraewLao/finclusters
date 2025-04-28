@@ -1,16 +1,13 @@
 import streamlit as st
 
+# ✅ Only one set_page_config, placed right after import
 st.set_page_config(
     page_title="Welcome to FinCluster",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
 )
-st.set_page_config(
-    page_title="Welcome to FinCluster",
-    page_icon="📊",
-    layout="wide"
-)
+
 # === TICKER INPUT (PERSISTENT ACROSS ALL PAGES) ===
 with st.sidebar:
     st.markdown("### 👉 Start here!")
@@ -18,6 +15,7 @@ with st.sidebar:
     st.session_state["ticker"] = ticker
 
 st.title("Welcome to FinCluster App")
+
 # Introduction Text
 st.markdown("""
 Welcome to the **Financial Ratio Cluster Finder** and **Return Forecasting** platform!
