@@ -9,15 +9,15 @@ App_page_0 = st.Page(
 )
 App_page_1 = st.Page(
     "pages/1_Peer_Cluster.py",
-    title="Step 1: Peers from cluster analysis"
+    title="Step 1: Cluster Analysis"
 )
 App_page_2 = st.Page(
     "pages/2_Expected_Return.py",
-    title="Step 2: Expected returns"
+    title="Step 2: Expected Returns"
 )
 App_page_3 = st.Page(
     "pages/3_Price_Forecast.py",
-    title="Step 3: Price forecast"
+    title="Step 3: Price Forecast"
 )
 
 # **** Set up navigation with section headers ****
