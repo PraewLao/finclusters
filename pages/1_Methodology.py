@@ -38,13 +38,13 @@ Users can toggle between using historical market returns or forward-looking risk
 """)
 
 
-st.markdown("### Peer Expected Return Range")
+st.markdown("#### Peer Expected Return Range")
 st.markdown("""
 The app calculates minimum and maximum expected returns among a company's peers using the sector's best-fit model.
 """)
 
 
-st.markdown("### Analyst Estimation of Expected Return")
+st.markdown("#### Analyst Estimation of Expected Return")
 st.markdown("""
 Using real-time forward P/E data from Yahoo Finance and assuming a 3% GDP growth rate, implied expected returns are computed using:
 """)
