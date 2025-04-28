@@ -1,4 +1,4 @@
-# The app structure is cloned from Professor Wysocki's Multipage Template
+# The app structure is cloned from Professor Wysocki's Multipage Template and the team made adjustments for the FinClusters App
 import streamlit as st
 
 # **** Page layout setup ****
@@ -28,10 +28,14 @@ pg = st.navigation(
     }
 )
 
+# **** Sidebar Layout ****
+with st.sidebar:
+    st.markdown("### 👉 Start here!")
+    ticker = st.text_input("Enter stock ticker", value=st.session_state.get("ticker", "")).upper().strip()
+    st.session_state["ticker"] = ticker
 
-# **** text/images shared on all pages ****
-st.sidebar.markdown("Sidebar Prompts:")
-
+    st.markdown("---")
+    st.markdown("### Sidebar Prompts:")
 
 # **** Execute the navigation code ****
 pg.run()
