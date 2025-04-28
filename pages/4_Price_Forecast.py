@@ -49,7 +49,6 @@ try:
             peer_price_max = forward_eps / (peer_min_return - terminal_growth)
 
     # === Forecasted Price Summary ===
-    st.markdown("---")
     st.subheader("📌 Forecasted Prices")
     
     # Prepare data for display
