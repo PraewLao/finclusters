@@ -71,15 +71,12 @@ st.markdown("---")
 import streamlit as st
 
 st.markdown("### Price Forecast Methodology")
-
-st.markdown("#### Overview")
 st.markdown("""
 The app projects potential future stock prices based on three forecasting methods.  
 Each method leverages the expected returns estimated earlier and combines them with forward-looking earnings data retrieved from Yahoo Finance.  
 This multi-approach framework provides users with a more comprehensive view of price potential under different assumptions.
 """)
 
-st.markdown("---")
 
 st.markdown("#### Model-Based Forecast")
 st.markdown("""
