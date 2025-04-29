@@ -17,10 +17,12 @@ The app uses pre-trained models per GICS sector with sector-specific financial r
 
 There are 5 Python scripts that create the 4 interactive and connected pages in the app:
 
-- **`streamlit_app.py`** – The homepage of the app (explains purpose and instructions).
-- **`page1.py`** – Peer Clustering analysis and visualization.
-- **`page2.py`** – Expected Return analysis from models and forecasts.
-- **`page3.py`** – Price Forecasting based on expected returns.
+- **`streamlit_app.py`** – The homepage of the app (explains purpose and instructions)
+- **`page0.py`** – Welcome page
+- **`page1.py`** – Methodology
+- **`page2.py`** – Peer Clustering analysis and visualization
+- **`page3.py`** – Expected Return analysis from models and forecasts
+- **`page4.py`** – Price Forecasting based on expected returns
 
 ---
 
@@ -29,11 +31,9 @@ There are 5 Python scripts that create the 4 interactive and connected pages in 
 ### Dependencies 
 
 - The **`requirements.txt`** file contains all necessary Python libraries (e.g., Streamlit, Pandas, Scikit-learn, Joblib, Plotly).
-- You need to have a **`/pages`** subdirectory that contains:
-  - **`page1.py`**, **`page2.py`**, **`page3.py`**
 - Pre-trained models and datasets for each sector:
-  - **scaler_hc.pkl**, **kmeans_model_hc.pkl**, **clustered_data_hc.csv**, etc.
-- A CSV reference file: **sector_model_coefficients_by_ticker_REPLACEMENT.csv** containing ticker and sector mapping, and **Active_Companies.csv** containing currently active companies.
+  - **scaler_hc.pkl**, **kmeans_model_hc.pkl**, **clustered_data_hc.csv**, **sector_model_coefficients_by_ticker_REPLACEMENT.csv**, etc.
+- A CSV reference file: **Active_Companies.csv** containing currently active companies.
 
 ---
 
