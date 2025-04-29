@@ -9,9 +9,9 @@ st.markdown("#### Overview")
 st.markdown("""
 We use **K-Means Clustering** to group companies based on similar **financial profiles**.  
 The clustering models are **industry-specific**, with separate models trained for:
-- Healthcare (GICS 35)
-- Consumer Discretionary (GICS 25)
-- Information Technology (GICS 45)
+- Healthcare (GICS 35) The full model training model was developed in [this Colab notebook](https://drive.google.com/drive/folders/1uGNFtpK5DD30P3GPYlD-GmGnO6TvwGBd?usp=share_link).
+- Consumer Discretionary (GICS 25) The full model training model was developed in [this Colab notebook](https://drive.google.com/drive/folders/1PWsaECx9pbb4ruzWR5-gOj2IYSFUcOJW?usp=share_link).
+- Information Technology (GICS 45) The full model training model was developed in [this Colab notebook](https://drive.google.com/drive/folders/15NKTZJ-nmJHGjEi9op1NyURigUFiRsND?usp=share_link).
 
 The goal is to identify companies with **comparable financial fundamentals** to aid in peer analysis, investment screening, and forecasting.
 """)
