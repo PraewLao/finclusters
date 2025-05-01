@@ -143,14 +143,7 @@ try:
         st.error(f"Error calculating peer return range: {e}")
 
     # === Analyst Forecast Section ===
-    st.markdown("---")
-    st.subheader("📣 Expected Return by Analyst Forecasts")
-    forward_pe = stock_info.get("forwardPE", None)
-    if forward_pe and forward_pe > 0:
-        analyst_return = (1 / forward_pe) + 0.03
-        st.success(f"📣 Analyst-Based Expected Return: **{round(analyst_return * 100, 2)}%**")
-    else:
-        st.info("Forward P/E not available. Analyst return estimate could not be calculated.")
+
 
 except Exception as e:
     st.error(f"Error: {e}")
