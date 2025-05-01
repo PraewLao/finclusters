@@ -296,7 +296,6 @@ try:
         st.success(f"📣 Analyst-Based Expected Return: **{round(analyst_return * 100, 2)}%**")
     else:
         st.info("Forward P/E not available. Analyst return estimate could not be calculated.")
-
-
+ 
 except Exception as e:
     st.error(f"Error: {e}")
